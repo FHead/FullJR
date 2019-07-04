@@ -50,7 +50,7 @@ void constructHist1D(TFile* outFile_p, std::vector<TH1D*>* hists_p, std::map<std
   TIter next(dir_p->GetListOfKeys());
   TKey* key=NULL;
 
-  const Int_t nMaxBins = 200;
+  const Int_t nMaxBins = 400;
   Double_t binsX[nMaxBins+1];  
 
   while((key = (TKey*)next())){
@@ -112,7 +112,7 @@ void constructHist2D(TFile* outFile_p, std::vector<TH2D*>* hists_p, std::map<std
   TIter next(dir_p->GetListOfKeys());
   TKey* key=NULL;
 
-  const Int_t nMaxBins = 200;
+  const Int_t nMaxBins = 400;
   Double_t binsX[nMaxBins+1];
   Double_t binsY[nMaxBins+1];  
 

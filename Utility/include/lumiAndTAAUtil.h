@@ -201,10 +201,12 @@ double getMax(TH2D* inHist_p)
 int getColorPosFromAlgo(const std::string algoStr)
 {
   Int_t colPos = 0;
-  if(algoStr.find("akCs4P") != std::string::npos) colPos = 4;
-  else if(algoStr.find("ak4PF") != std::string::npos) colPos = 4;
-  else if(algoStr.find("akCs6P") != std::string::npos) colPos = 6;
-  else if(algoStr.find("ak6PF") != std::string::npos) colPos = 6;
+  if(algoStr.find("akCs3P") != std::string::npos) colPos = 3;
+  else if(algoStr.find("ak3PF") != std::string::npos) colPos = 3;
+  else if(algoStr.find("akCs4P") != std::string::npos) colPos = 6;
+  else if(algoStr.find("ak4PF") != std::string::npos) colPos = 6;
+  else if(algoStr.find("akCs6P") != std::string::npos) colPos = 4;
+  else if(algoStr.find("ak6PF") != std::string::npos) colPos = 4;
   else if(algoStr.find("akCs8P") != std::string::npos) colPos = 5;
   else if(algoStr.find("ak8PF") != std::string::npos) colPos = 5;
   else if(algoStr.find("akCs10P") != std::string::npos) colPos = 2;
@@ -227,15 +229,17 @@ int getColorPosFromCent(const std::string centStr, bool isPP)
 
 int getStyleFromAlgo(const std::string algoStr)
 {
-  Int_t colPos = 20;
-  if(algoStr.find("akCs4P") != std::string::npos) colPos = 21;
-  else if(algoStr.find("ak4PF") != std::string::npos) colPos = 21;
-  else if(algoStr.find("akCs6P") != std::string::npos) colPos = 34;
-  else if(algoStr.find("ak6PF") != std::string::npos) colPos = 34;
-  else if(algoStr.find("akCs8P") != std::string::npos) colPos = 47;
-  else if(algoStr.find("ak8PF") != std::string::npos) colPos = 47;
-  else if(algoStr.find("akCs10P") != std::string::npos) colPos = 33;
-  else if(algoStr.find("ak10PF") != std::string::npos) colPos = 33;
+  Int_t colPos = 42;
+  if(algoStr.find("akCs3P") != std::string::npos) colPos = 24;
+  else if(algoStr.find("ak3PF") != std::string::npos) colPos = 24;
+  else if(algoStr.find("akCs4P") != std::string::npos) colPos = 25;
+  else if(algoStr.find("ak4PF") != std::string::npos) colPos = 25;
+  else if(algoStr.find("akCs6P") != std::string::npos) colPos = 28;
+  else if(algoStr.find("ak6PF") != std::string::npos) colPos = 28;
+  else if(algoStr.find("akCs8P") != std::string::npos) colPos = 46;
+  else if(algoStr.find("ak8PF") != std::string::npos) colPos = 46;
+  else if(algoStr.find("akCs10P") != std::string::npos) colPos = 27;
+  else if(algoStr.find("ak10PF") != std::string::npos) colPos = 27;
 
   return colPos;
 }
@@ -258,11 +262,11 @@ int getAltStyleFromAlgo(const std::string algoStr)
 int getStyleFromCent(const std::string centStr, bool isPP)
 {
   Int_t colPos = 0;
-  if(isPP) colPos = 20;
-  else if(centStr.find("Cent0to10") != std::string::npos) colPos = 34;
-  else if(centStr.find("Cent10to30") != std::string::npos) colPos = 47;
-  else if(centStr.find("Cent30to50") != std::string::npos) colPos = 33;
-  else if(centStr.find("Cent50to90") != std::string::npos) colPos = 21;
+  if(isPP) colPos = 24;
+  else if(centStr.find("Cent0to10") != std::string::npos) colPos = 28;
+  else if(centStr.find("Cent10to30") != std::string::npos) colPos = 46;
+  else if(centStr.find("Cent30to50") != std::string::npos) colPos = 27;
+  else if(centStr.find("Cent50to90") != std::string::npos) colPos = 25;
 
   return colPos;
 }

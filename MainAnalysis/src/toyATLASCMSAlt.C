@@ -113,6 +113,7 @@ void constructResponse(Double_t par0, Double_t par1, Double_t par2, Int_t nMax, 
   return;
 }
 
+
 void doUnfold(TH2D* matrix_p, TH1D* prior_p, TH1D* data_p, Int_t nBayes, Int_t bayesVals[], std::string tagStr, TH1D* unfolded_p[])
 {
   TH2D* matrixClone_p = (TH2D*)matrix_p->Clone("matrixClone_h");
@@ -204,11 +205,8 @@ void doUnfold(TH2D* matrix_p, TH1D* prior_p, TH1D* data_p, Int_t nBayes, Int_t b
   return;
 }
 
-int toyATLASCMS(int seed, ULong64_t number)  
+int toyATLASCMSAlt(int seed, ULong64_t number)  
 {
-  cppWatch total;
-  total.start();
-
   TDatime* date = new TDatime();
   const std::string dateStr = std::to_string(date->GetDate());
   delete date;
@@ -241,10 +239,10 @@ int toyATLASCMS(int seed, ULong64_t number)
   */
   Int_t lowGenVal = 10;
   Int_t hiGenVal = 1500;
-  Int_t nGenBins = (hiGenVal - lowGenVal)/5.;
+  Int_t nGenBins = (hiGenVal - lowGenVal)/2.5;
   Double_t genBins[nMaxBins+1];
   for(Int_t gI = 0; gI < nGenBins+1; ++gI){
-    genBins[gI] = lowGenVal + 5.*gI;
+    genBins[gI] = lowGenVal + 2.5*gI;
   }
 
   /*
@@ -253,23 +251,18 @@ int toyATLASCMS(int seed, ULong64_t number)
   */
   Int_t lowRecoVal = 40;
   Int_t hiRecoVal = 1500;
-  Int_t nRecoBins = (hiRecoVal - lowRecoVal)/5.;
+  Int_t nRecoBins = (hiRecoVal - lowRecoVal)/2.5;
   Double_t recoBins[nMaxBins+1];
   for(Int_t gI = 0; gI < nRecoBins+1; ++gI){
-    recoBins[gI] = lowRecoVal + 5.*gI;
+    recoBins[gI] = lowRecoVal + 2.5*gI;
   }
   
   /*
   const Int_t nRecoBins = 9;
   Double_t recoBins[nRecoBins+1] = {80,100,160,220,280,350,420,500,630,800};
   */
-  const Int_t nPowers = 4;
-  const Double_t powers[nPowers] = {6, 7, 8 ,9};
-
-  const Int_t nRandomGen = 5;
-  const Int_t nTarget = 3;
-  const Double_t targetPoint = 500.;
-  const Double_t errTarget = 200./20.; 
+  const Int_t nPowers = 6;
+  const Double_t powers[nPowers] = {4., 5., 6., 7., 8., 9.};
 
   TH2D* atlasResponse_h[nPowers];
   TH1D* atlasResReco_h[nPowers];
@@ -281,9 +274,11 @@ int toyATLASCMS(int seed, ULong64_t number)
   TH2D* cmsPPR4Response_h[nPowers];
   TH1D* cmsPPR4ResReco_h[nPowers];
   TH1D* cmsPPR4ResGen_h[nPowers];
+
   TH2D* cmsR10Response_h[nPowers];
   TH1D* cmsR10ResReco_h[nPowers];
   TH1D* cmsR10ResGen_h[nPowers];
+
   TH2D* cmsR10SmearResponse_h[nPowers];
   TH1D* cmsR10SmearResReco_h[nPowers];
   TH1D* cmsR10SmearResGen_h[nPowers];
@@ -305,19 +300,6 @@ int toyATLASCMS(int seed, ULong64_t number)
   TH2D* recoGenSpectraCMSPPR4TruncPower_p[nPowers];
   TH2D* recoGenSpectraCMSR10TruncPower_p[nPowers];
   TH2D* recoGenSpectraCMSR10SmearTruncPower_p[nPowers];
-
-
-  TH1D* genSpectraATLASTruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH1D* genSpectraCMSR4TruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH1D* genSpectraCMSPPR4TruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH1D* genSpectraCMSR10TruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH1D* genSpectraCMSR10SmearTruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-
-  TH2D* recoGenSpectraATLASTruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH2D* recoGenSpectraCMSR4TruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH2D* recoGenSpectraCMSPPR4TruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH2D* recoGenSpectraCMSR10TruncPower_Rand_p[nPowers][nRandomGen][nTarget];
-  TH2D* recoGenSpectraCMSR10SmearTruncPower_Rand_p[nPowers][nRandomGen][nTarget];
 
   for(Int_t pI = 0; pI < nPowers; ++pI){
     std::string powStr = "Power" + prettyString(powers[pI], 1, true);
@@ -352,13 +334,10 @@ int toyATLASCMS(int seed, ULong64_t number)
     recoCMSPPR4SpectraPower_p[pI] = new TH1D(("recoCMSPPR4Spectra" + powStr + "_h").c_str(), ";recoCMSPPR4;counts", nRecoBins, recoBins);
 
     genSpectraCMSR10TruncPower_p[pI] = new TH1D(("genSpectraCMSR10Trunc" + powStr + "_h").c_str(), ";gen;counts", nGenBins, genBins);
-    recoCMSR10SpectraPower_p[pI] = new TH1D(("recoCMSR10Spectra" + powStr + "_h").c_str()
-, ";recoCMSR10;counts", nRecoBins, recoBins);
+    recoCMSR10SpectraPower_p[pI] = new TH1D(("recoCMSR10Spectra" + powStr + "_h").c_str(), ";recoCMSR10;counts", nRecoBins, recoBins);
 
     genSpectraCMSR10SmearTruncPower_p[pI] = new TH1D(("genSpectraCMSR10SmearTrunc" + powStr + "_h").c_str(), ";gen;counts", nGenBins, genBins);
-    recoCMSR10SmearSpectraPower_p[pI] = new TH1D(("recoCMSR10SmearSpectra" + powStr + "_h").c_str()
-, ";recoCMSR10Smear;counts", nRecoBins, recoBins);
-
+    recoCMSR10SmearSpectraPower_p[pI] = new TH1D(("recoCMSR10SmearSpectra" + powStr + "_h").c_str(), ";recoCMSR10Smear;counts", nRecoBins, recoBins);
 
     recoGenSpectraATLASTruncPower_p[pI] = new TH2D(("recoGenSpectraATLASTrunc" + powStr + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
     recoGenSpectraCMSR4TruncPower_p[pI] = new TH2D(("recoGenSpectraCMSR4Trunc" + powStr + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
@@ -366,24 +345,6 @@ int toyATLASCMS(int seed, ULong64_t number)
     recoGenSpectraCMSR10TruncPower_p[pI] = new TH2D(("recoGenSpectraCMSR10Trunc" + powStr + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
 
     recoGenSpectraCMSR10SmearTruncPower_p[pI] = new TH2D(("recoGenSpectraCMSR10SmearTrunc" + powStr + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
-  
-    for(Int_t rI = 0; rI < nRandomGen; ++rI){
-      for(Int_t tI = 0; tI < nTarget; ++tI){
-	genSpectraATLASTruncPower_Rand_p[pI][rI][tI] = new TH1D(("genSpectraATLASTrunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nGenBins, genBins);
-	genSpectraCMSR4TruncPower_Rand_p[pI][rI][tI] = new TH1D(("genSpectraCMSR4Trunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nGenBins, genBins);
-	genSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI] = new TH1D(("genSpectraCMSPPR4Trunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nGenBins, genBins);
-	genSpectraCMSR10TruncPower_Rand_p[pI][rI][tI] = new TH1D(("genSpectraCMSR10Trunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nGenBins, genBins);
-	genSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI] = new TH1D(("genSpectraCMSR10SmearTrunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nGenBins, genBins);
-	
-	recoGenSpectraATLASTruncPower_Rand_p[pI][rI][tI] = new TH2D(("recoGenSpectraATLASTrunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
-	recoGenSpectraCMSR4TruncPower_Rand_p[pI][rI][tI] = new TH2D(("recoGenSpectraCMSR4Trunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
-	recoGenSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI] = new TH2D(("recoGenSpectraCMSPPR4Trunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
-	recoGenSpectraCMSR10TruncPower_Rand_p[pI][rI][tI] = new TH2D(("recoGenSpectraCMSR10Trunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
-	recoGenSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI] = new TH2D(("recoGenSpectraCMSR10SmearTrunc" + powStr + "_Random" + std::to_string(rI) + "_Target" + std::to_string(tI) + "_h").c_str(), ";reco;gen", nRecoBins, recoBins, nGenBins, genBins);
-
-	setSumW2({genSpectraATLASTruncPower_Rand_p[pI][rI][tI], genSpectraCMSR4TruncPower_Rand_p[pI][rI][tI], genSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI], genSpectraCMSR10TruncPower_Rand_p[pI][rI][tI], genSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI],  recoGenSpectraATLASTruncPower_Rand_p[pI][rI][tI], recoGenSpectraCMSR4TruncPower_Rand_p[pI][rI][tI], recoGenSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI], recoGenSpectraCMSR10TruncPower_Rand_p[pI][rI][tI], recoGenSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI]});
-      }
-    }
 
     setSumW2({atlasResponse_h[pI], atlasResReco_h[pI], atlasResGen_h[pI], cmsR4Response_h[pI], cmsR4ResReco_h[pI], cmsR4ResGen_h[pI], cmsPPR4Response_h[pI], cmsPPR4ResReco_h[pI], cmsPPR4ResGen_h[pI], cmsR10Response_h[pI], cmsR10ResReco_h[pI], cmsR10ResGen_h[pI], cmsR10SmearResponse_h[pI], cmsR10SmearResReco_h[pI], cmsR10SmearResGen_h[pI], genSpectraPower_p[pI], genSpectraATLASTruncPower_p[pI], recoATLASSpectraPower_p[pI], genSpectraCMSR4TruncPower_p[pI], recoCMSR4SpectraPower_p[pI], genSpectraCMSPPR4TruncPower_p[pI], recoCMSPPR4SpectraPower_p[pI], genSpectraCMSR10TruncPower_p[pI], recoCMSR10SpectraPower_p[pI], genSpectraCMSR10SmearTruncPower_p[pI], recoCMSR10SmearSpectraPower_p[pI], recoGenSpectraATLASTruncPower_p[pI], recoGenSpectraCMSR4TruncPower_p[pI], recoGenSpectraCMSPPR4TruncPower_p[pI], recoGenSpectraCMSR10TruncPower_p[pI], recoGenSpectraCMSR10SmearTruncPower_p[pI]});
   }
@@ -397,18 +358,20 @@ int toyATLASCMS(int seed, ULong64_t number)
 
   for(Int_t pI = 0; pI < nPowers; ++pI){
     for(ULong64_t gI = 0; gI < nFill; ++gI){
-      Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 1), 1);
-      Double_t genPt = genBins[0]/TMath::Power(prob, 1./1.);
-      Double_t genPtToFill = genPt;
-      Double_t weight2 = TMath::Power(genBins[0]/genPt, powers[pI]-2);
-      fillWeight = weight2;
-      //      fillWeight = 1.0;
+      //      Double_t prob = randGen_p->Uniform(0, 1);
+      //      Double_t prob = randGen_p->Uniform(0, 1);
+      //      Double_t genPt = genBins[0]/TMath::Power(prob, 1./2.);
 
-      //    if(genPt < genBins[0]) genPtToFill = genBins[0]+1;
-      //    if(genPt >= genBins[nGenBins]) genPtToFill = genBins[nGenBins]-1;
-      
+      Double_t genPt = randGen_p->Uniform(genBins[0], genBins[nGenBins]);
+
       if(genPt < genBins[0]) continue;
       if(genPt >= genBins[nGenBins]) continue;
+
+      Double_t weight2 = TMath::Power(genBins[0]/genPt, powers[pI]);
+      fillWeight = weight2;
+	//      Double_t genPt = 20./TMath::Power(prob, 1./powers[pI]);
+	//      Double_t genPtToFill = genPt;    
+      
       
       Double_t resATLAS = TMath::Sqrt(atlasPar0*atlasPar0 + atlasPar1*atlasPar1/genPt + atlasPar2*atlasPar2/(genPt*genPt));
       Double_t resCMSR4 = TMath::Sqrt(cmsR4Par0*cmsR4Par0 + cmsR4Par1*cmsR4Par1/genPt + cmsR4Par2*cmsR4Par2/(genPt*genPt));
@@ -423,33 +386,33 @@ int toyATLASCMS(int seed, ULong64_t number)
       Double_t recoCMSR10Smear = genPt*randGen_p->Gaus(1., resCMSR10Smear);
       
       if(recoATLAS >= recoBins[0] && recoATLAS < recoBins[nRecoBins]){
-	atlasResponse_h[pI]->Fill(recoATLAS, genPtToFill, fillWeight);
+	atlasResponse_h[pI]->Fill(recoATLAS, genPt, fillWeight);
 	atlasResReco_h[pI]->Fill(recoATLAS, fillWeight);
-	atlasResGen_h[pI]->Fill(genPtToFill, fillWeight);
+	atlasResGen_h[pI]->Fill(genPt, fillWeight);
       }
       
       if(recoCMSR4 >= recoBins[0] && recoCMSR4 < recoBins[nRecoBins]){
-	cmsR4Response_h[pI]->Fill(recoCMSR4, genPtToFill, fillWeight);
+	cmsR4Response_h[pI]->Fill(recoCMSR4, genPt, fillWeight);
 	cmsR4ResReco_h[pI]->Fill(recoCMSR4, fillWeight);
-	cmsR4ResGen_h[pI]->Fill(genPtToFill, fillWeight);
+	cmsR4ResGen_h[pI]->Fill(genPt, fillWeight);
       }
 
       if(recoCMSPPR4 >= recoBins[0] && recoCMSPPR4 < recoBins[nRecoBins]){
-	cmsPPR4Response_h[pI]->Fill(recoCMSPPR4, genPtToFill, fillWeight);
+	cmsPPR4Response_h[pI]->Fill(recoCMSPPR4, genPt, fillWeight);
 	cmsPPR4ResReco_h[pI]->Fill(recoCMSPPR4, fillWeight);
-	cmsPPR4ResGen_h[pI]->Fill(genPtToFill, fillWeight);
+	cmsPPR4ResGen_h[pI]->Fill(genPt, fillWeight);
       }
 
       if(recoCMSR10 >= recoBins[0] && recoCMSR10 < recoBins[nRecoBins]){
-	cmsR10Response_h[pI]->Fill(recoCMSR10, genPtToFill, fillWeight);
+	cmsR10Response_h[pI]->Fill(recoCMSR10, genPt, fillWeight);
 	cmsR10ResReco_h[pI]->Fill(recoCMSR10, fillWeight);
-	cmsR10ResGen_h[pI]->Fill(genPtToFill, fillWeight);
+	cmsR10ResGen_h[pI]->Fill(genPt, fillWeight);
       }
 
       if(recoCMSR10Smear >= recoBins[0] && recoCMSR10Smear < recoBins[nRecoBins]){
-	cmsR10SmearResponse_h[pI]->Fill(recoCMSR10Smear, genPtToFill, fillWeight);
+	cmsR10SmearResponse_h[pI]->Fill(recoCMSR10Smear, genPt, fillWeight);
 	cmsR10SmearResReco_h[pI]->Fill(recoCMSR10Smear, fillWeight);
-	cmsR10SmearResGen_h[pI]->Fill(genPtToFill, fillWeight);
+	cmsR10SmearResGen_h[pI]->Fill(genPt, fillWeight);
       }
     }
   }
@@ -468,20 +431,24 @@ int toyATLASCMS(int seed, ULong64_t number)
 
   for(Int_t pI = 0; pI < nPowers; ++pI){
     for(ULong64_t gI = 0; gI < nFill; ++gI){
-      Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 1), 1);
-      Double_t genPt = genBins[0]/TMath::Power(prob, 1./1.);
-      Double_t genPtToFill = genPt;
-      Double_t weight2 = TMath::Power(genBins[0]/genPt, powers[pI]-2);
+      //      Double_t prob = randGen_p->Uniform(0, 1);
+      //      Double_t genPt = 20./TMath::Power(prob, 1./powers[pI]);
+
+      //      Double_t prob = randGen_p->Uniform(0, 1);
+      //      Double_t genPt = genBins[0]/TMath::Power(prob, 1./2.);
+
+      Double_t genPt = randGen_p->Uniform(genBins[0], genBins[nGenBins]);
+
+      if(genPt < genBins[0]) continue;
+      if(genPt >= genBins[nGenBins]) continue;
+
+      Double_t weight2 = TMath::Power(genBins[0]/genPt, powers[pI]);
       fillWeight = weight2;
-      //      fillWeight = 1.0;
-      
-      //    if(genPt < genBins[0]) genPtToFill = genBins[0]+1;
-      //    if(genPt >= genBins[nGenBins]) genPtToFill = genBins[nGenBins]-1;
-      
+           
       if(genPt < genBins[0]) continue;
       if(genPt >= genBins[nGenBins]) continue;
       
-      genSpectraPower_p[pI]->Fill(genPtToFill, fillWeight);
+      genSpectraPower_p[pI]->Fill(genPt, fillWeight);
       
       Double_t resATLAS = TMath::Sqrt(atlasPar0*atlasPar0 + atlasPar1*atlasPar1/genPt + atlasPar2*atlasPar2/(genPt*genPt));
       Double_t resCMSR4 = TMath::Sqrt(cmsR4Par0*cmsR4Par0 + cmsR4Par1*cmsR4Par1/genPt + cmsR4Par2*cmsR4Par2/(genPt*genPt));
@@ -494,191 +461,47 @@ int toyATLASCMS(int seed, ULong64_t number)
       Double_t recoCMSPPR4 = genPt*randGen_p->Gaus(1., resCMSPPR4);
       Double_t recoCMSR10 = genPt*randGen_p->Gaus(1., resCMSR10);
       Double_t recoCMSR10Smear = genPt*randGen_p->Gaus(1., resCMSR10Smear);
-
       
       if(recoATLAS >= recoBins[0] && recoATLAS < recoBins[nRecoBins]){
 	recoATLASSpectraPower_p[pI]->Fill(recoATLAS, fillWeight);
-	genSpectraATLASTruncPower_p[pI]->Fill(genPtToFill, fillWeight);
-	recoGenSpectraATLASTruncPower_p[pI]->Fill(recoATLAS, genPtToFill, fillWeight);
+	genSpectraATLASTruncPower_p[pI]->Fill(genPt, fillWeight);
+	recoGenSpectraATLASTruncPower_p[pI]->Fill(recoATLAS, genPt, fillWeight);
       }
       
       if(recoCMSR4 >= recoBins[0] && recoCMSR4 < recoBins[nRecoBins]){
 	recoCMSR4SpectraPower_p[pI]->Fill(recoCMSR4, fillWeight);
-	genSpectraCMSR4TruncPower_p[pI]->Fill(genPtToFill, fillWeight);
-	recoGenSpectraCMSR4TruncPower_p[pI]->Fill(recoCMSR4, genPtToFill, fillWeight);
+	genSpectraCMSR4TruncPower_p[pI]->Fill(genPt, fillWeight);
+	recoGenSpectraCMSR4TruncPower_p[pI]->Fill(recoCMSR4, genPt, fillWeight);
       }      
 
       if(recoCMSPPR4 >= recoBins[0] && recoCMSPPR4 < recoBins[nRecoBins]){
 	recoCMSPPR4SpectraPower_p[pI]->Fill(recoCMSPPR4, fillWeight);
-	genSpectraCMSPPR4TruncPower_p[pI]->Fill(genPtToFill, fillWeight);
-	recoGenSpectraCMSPPR4TruncPower_p[pI]->Fill(recoCMSPPR4, genPtToFill, fillWeight);
+	genSpectraCMSPPR4TruncPower_p[pI]->Fill(genPt, fillWeight);
+	recoGenSpectraCMSPPR4TruncPower_p[pI]->Fill(recoCMSPPR4, genPt, fillWeight);
       }      
 
       if(recoCMSR10 >= recoBins[0] && recoCMSR10 < recoBins[nRecoBins]){
 	recoCMSR10SpectraPower_p[pI]->Fill(recoCMSR10, fillWeight);
-	genSpectraCMSR10TruncPower_p[pI]->Fill(genPtToFill, fillWeight);
-	recoGenSpectraCMSR10TruncPower_p[pI]->Fill(recoCMSR10, genPtToFill, fillWeight);
+	genSpectraCMSR10TruncPower_p[pI]->Fill(genPt, fillWeight);
+	recoGenSpectraCMSR10TruncPower_p[pI]->Fill(recoCMSR10, genPt, fillWeight);
       }      
 
       if(recoCMSR10Smear >= recoBins[0] && recoCMSR10Smear < recoBins[nRecoBins]){
 	recoCMSR10SmearSpectraPower_p[pI]->Fill(recoCMSR10Smear, fillWeight);
-	genSpectraCMSR10SmearTruncPower_p[pI]->Fill(genPtToFill, fillWeight);
-	recoGenSpectraCMSR10SmearTruncPower_p[pI]->Fill(recoCMSR10Smear, genPtToFill, fillWeight);
+	genSpectraCMSR10SmearTruncPower_p[pI]->Fill(genPt, fillWeight);
+	recoGenSpectraCMSR10SmearTruncPower_p[pI]->Fill(recoCMSR10Smear, genPt, fillWeight);
       }      
     }
   }
-
-
-  //  const Double_t errTarget = 5382.0000/20.;
- 
-  for(Int_t pI = 0; pI < nPowers; ++pI){
-    std::cout << "Building distribution " << pI << "/" << nPowers << std::endl;
-    for(Int_t rI = 0; rI < nRandomGen; ++rI){
-      std::cout << " " << rI << "/" << nRandomGen << std::endl;
-
-      for(Int_t tI = 0; tI < nTarget; ++tI){
-	
-	Double_t val = 0.0;
-	Double_t err = 0.0;
-	Double_t rat = 1.0;
-	
-	while(rat > 1./TMath::Sqrt(errTarget*TMath::Power(10, tI))){
-	  Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 3-tI), 1);
-	  Double_t genPt = genBins[0]/TMath::Power(prob, 1./(3.-tI));	
-
-	  Double_t resATLAS = TMath::Sqrt(atlasPar0*atlasPar0 + atlasPar1*atlasPar1/genPt + atlasPar2*atlasPar2/(genPt*genPt));
-	  Double_t recoATLAS = genPt*randGen_p->Gaus(1., resATLAS);
-	  
-	  if(recoATLAS >= recoBins[0] && recoATLAS < recoBins[nRecoBins]){
-	    Double_t weight = TMath::Power(genBins[0]/genPt, powers[pI]-(4-tI));
-	    genSpectraATLASTruncPower_Rand_p[pI][rI][tI]->Fill(genPt, weight);
-	    recoGenSpectraATLASTruncPower_Rand_p[pI][rI][tI]->Fill(recoATLAS, genPt, weight);
-	    
-	    if(recoATLAS > targetPoint){
-	      val += weight;
-	      err = TMath::Sqrt(err*err + weight*weight);
-	    }
-	  }
-	  
-	  if(val <= TMath::Power(10, -20)) rat = 1.0;
-	  else rat = err/val;
-	}
-	
-	val = 0.0;
-	err = 0.0;
-	rat = 1.0;
-	
-	while(rat > 1./TMath::Sqrt(errTarget*TMath::Power(10, tI))){
-	  Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 3-tI), 1);
-	  Double_t genPt = genBins[0]/TMath::Power(prob, 1./(3.-tI));	
-	  
-	  Double_t resCMSR4 = TMath::Sqrt(cmsR4Par0*cmsR4Par0 + cmsR4Par1*cmsR4Par1/genPt + cmsR4Par2*cmsR4Par2/(genPt*genPt));
-	  Double_t recoCMSR4 = genPt*randGen_p->Gaus(1., resCMSR4);
-	  
-	  if(recoCMSR4 >= recoBins[0] && recoCMSR4 < recoBins[nRecoBins]){
-	    Double_t weight = TMath::Power(genBins[0]/genPt, powers[pI]-(4-tI));
-	    genSpectraCMSR4TruncPower_Rand_p[pI][rI][tI]->Fill(genPt, weight);
-	    recoGenSpectraCMSR4TruncPower_Rand_p[pI][rI][tI]->Fill(recoCMSR4, genPt, weight);
-	    
-	    if(recoCMSR4 > targetPoint){
-	      val += weight;
-	      err = TMath::Sqrt(err*err + weight*weight);
-	    }
-	  }
-	  
-	  if(val <= TMath::Power(10, -20)) rat = 1.0;
-	  else rat = err/val;
-	}
-	
-	val = 0.0;
-	err = 0.0;
-	rat = 1.0;
-	
-	while(rat > 1./TMath::Sqrt(errTarget*TMath::Power(10, tI))){
-	  Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 3-tI), 1);
-	  Double_t genPt = genBins[0]/TMath::Power(prob, 1./(3.-tI));	
-	  
-	  Double_t resCMSPPR4 = TMath::Sqrt(cmsPPR4Par0*cmsPPR4Par0 + cmsPPR4Par1*cmsPPR4Par1/genPt + cmsPPR4Par2*cmsPPR4Par2/(genPt*genPt));
-	  Double_t recoCMSPPR4 = genPt*randGen_p->Gaus(1., resCMSPPR4);
-	  
-	  if(recoCMSPPR4 >= recoBins[0] && recoCMSPPR4 < recoBins[nRecoBins]){
-	    Double_t weight = TMath::Power(genBins[0]/genPt, powers[pI]-(4-tI));
-	    genSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI]->Fill(genPt, weight);
-	    recoGenSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI]->Fill(recoCMSPPR4, genPt, weight);
-	    
-	    if(recoCMSPPR4 > targetPoint){
-	      val += weight;
-	      err = TMath::Sqrt(err*err + weight*weight);
-	    }
-	  }
-	  
-	  if(val <= TMath::Power(10, -20)) rat = 1.0;
-	  else rat = err/val;
-	}
-	
-	val = 0.0;
-	err = 0.0;
-	rat = 1.0;
-	
-	while(rat > 1./TMath::Sqrt(errTarget*TMath::Power(10, tI))){
-	  Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 3-tI), 1);
-	  Double_t genPt = genBins[0]/TMath::Power(prob, 1./(3.-tI));	
-	  
-	  Double_t resCMSR10 = TMath::Sqrt(cmsR10Par0*cmsR10Par0 + cmsR10Par1*cmsR10Par1/genPt + cmsR10Par2*cmsR10Par2/(genPt*genPt));
-	  Double_t recoCMSR10 = genPt*randGen_p->Gaus(1., resCMSR10);
-	  
-	  if(recoCMSR10 >= recoBins[0] && recoCMSR10 < recoBins[nRecoBins]){
-	    Double_t weight = TMath::Power(genBins[0]/genPt, powers[pI]-(4-tI));
-	    genSpectraCMSR10TruncPower_Rand_p[pI][rI][tI]->Fill(genPt, weight);
-	    recoGenSpectraCMSR10TruncPower_Rand_p[pI][rI][tI]->Fill(recoCMSR10, genPt, weight);
-	    
-	    if(recoCMSR10 > targetPoint){
-	      val += weight;
-	      err = TMath::Sqrt(err*err + weight*weight);
-	    }
-	  }
-	  
-	  if(val <= TMath::Power(10, -20)) rat = 1.0;
-	  else rat = err/val;
-	}
-	
-
-	val = 0.0;
-	err = 0.0;
-	rat = 1.0;
-	
-       	while(rat > 1./TMath::Sqrt(errTarget*TMath::Power(10, tI))){
-	  Double_t prob = randGen_p->Uniform(TMath::Power(genBins[0]/genBins[nGenBins], 3-tI), 1);
-	  Double_t genPt = genBins[0]/TMath::Power(prob, 1./(3.-tI));	
-	  
-	  Double_t resCMSR10Smear = 1.1*1.1*TMath::Sqrt(cmsR10Par0*cmsR10Par0 + cmsR10Par1*cmsR10Par1/genPt + cmsR10Par2*cmsR10Par2/(genPt*genPt));
-	  Double_t recoCMSR10Smear = genPt*randGen_p->Gaus(1., resCMSR10Smear);
-
-	  if(recoCMSR10Smear >= recoBins[0] && recoCMSR10Smear < recoBins[nRecoBins]){
-	    Double_t weight = TMath::Power(genBins[0]/genPt, powers[pI]-(4-tI));
-	    genSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI]->Fill(genPt, weight);
-	    recoGenSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI]->Fill(recoCMSR10Smear, genPt, weight);
-	    
-	    if(recoCMSR10Smear > targetPoint){
-	      val += weight;
-	      err = TMath::Sqrt(err*err + weight*weight);
-	    }
-	  }
-	  
-	  if(val <= TMath::Power(10, -20)) rat = 1.0;
-	  else rat = err/val;
-	}
-      }
-    }
-  }
-
+  
+  
   std::cout << "STARTED UNFOLDING" << std::endl;
   //Unfolding testing
 
   checkMakeDir("output");
   checkMakeDir("output/" + dateStr);
   
-  TFile* outFile_p = new TFile(("output/" + dateStr + "/toyCMSATLAS_NFill" + std::to_string(nFill) + "_Seed" + std::to_string(seed) + "_" + dateStr + ".root").c_str(), "RECREATE");
+  TFile* outFile_p = new TFile(("output/" + dateStr + "/toyCMSATLASAlt_NFill" + std::to_string(nFill) + "_Seed" + std::to_string(seed) + "_" + dateStr + ".root").c_str(), "RECREATE");
 
   for(Int_t pI = 0; pI < nPowers; ++pI){
     atlasResponse_h[pI]->Write("", TObject::kOverwrite);
@@ -701,11 +524,9 @@ int toyATLASCMS(int seed, ULong64_t number)
     cmsR10SmearResGen_h[pI]->Write("", TObject::kOverwrite);
     
     genSpectraPower_p[pI]->Write("", TObject::kOverwrite);
-
     genSpectraATLASTruncPower_p[pI]->Write("", TObject::kOverwrite);
     recoATLASSpectraPower_p[pI]->Write("", TObject::kOverwrite);
     recoGenSpectraATLASTruncPower_p[pI]->Write("", TObject::kOverwrite);
-
     genSpectraCMSR4TruncPower_p[pI]->Write("", TObject::kOverwrite);
     recoCMSR4SpectraPower_p[pI]->Write("", TObject::kOverwrite);
     recoGenSpectraCMSR4TruncPower_p[pI]->Write("", TObject::kOverwrite);
@@ -721,22 +542,6 @@ int toyATLASCMS(int seed, ULong64_t number)
     genSpectraCMSR10SmearTruncPower_p[pI]->Write("", TObject::kOverwrite);
     recoCMSR10SmearSpectraPower_p[pI]->Write("", TObject::kOverwrite);
     recoGenSpectraCMSR10SmearTruncPower_p[pI]->Write("", TObject::kOverwrite);
-
-    for(Int_t rI = 0; rI < nRandomGen; ++rI){
-      for(Int_t tI = 0; tI < nTarget; ++tI){
-	genSpectraATLASTruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	genSpectraCMSR4TruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	genSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	genSpectraCMSR10TruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	genSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	
-	recoGenSpectraATLASTruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	recoGenSpectraCMSR4TruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	recoGenSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	recoGenSpectraCMSR10TruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-	recoGenSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI]->Write("", TObject::kOverwrite);
-      }
-    }
   }
   
 
@@ -761,7 +566,6 @@ int toyATLASCMS(int seed, ULong64_t number)
     delete cmsR10SmearResGen_h[pI];
     
     delete genSpectraPower_p[pI];
-
     delete genSpectraATLASTruncPower_p[pI];
     delete recoATLASSpectraPower_p[pI];
     delete recoGenSpectraATLASTruncPower_p[pI];
@@ -781,22 +585,6 @@ int toyATLASCMS(int seed, ULong64_t number)
     delete genSpectraCMSR10SmearTruncPower_p[pI];
     delete recoCMSR10SmearSpectraPower_p[pI];
     delete recoGenSpectraCMSR10SmearTruncPower_p[pI];
-
-    for(Int_t rI = 0; rI < nRandomGen; ++rI){
-      for(Int_t tI = 0; tI < nTarget; ++tI){
-	delete genSpectraATLASTruncPower_Rand_p[pI][rI][tI];
-	delete genSpectraCMSR4TruncPower_Rand_p[pI][rI][tI];
-	delete genSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI];
-	delete genSpectraCMSR10TruncPower_Rand_p[pI][rI][tI];
-	delete genSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI];
-	
-	delete recoGenSpectraATLASTruncPower_Rand_p[pI][rI][tI];
-	delete recoGenSpectraCMSR4TruncPower_Rand_p[pI][rI][tI];
-	delete recoGenSpectraCMSPPR4TruncPower_Rand_p[pI][rI][tI];
-	delete recoGenSpectraCMSR10TruncPower_Rand_p[pI][rI][tI];
-	delete recoGenSpectraCMSR10SmearTruncPower_Rand_p[pI][rI][tI];
-      }
-    }
   }
   
   outFile_p->Close();
@@ -804,12 +592,7 @@ int toyATLASCMS(int seed, ULong64_t number)
 
   delete randGen_p;
   
-  total.stop();
-
-  std::cout << "Total timing: " << std::endl;
-  std::cout << " CPU: " << total.totalCPU() << std::endl;
-  std::cout << " Wall: " << total.totalWall() << std::endl;
-
+  std::cout << "COMPLETE" << std::endl;
   return 0;
 }
 
@@ -817,11 +600,11 @@ int toyATLASCMS(int seed, ULong64_t number)
 int main(int argc, char* argv[])
 {
   if(argc != 3){
-    std::cout << "Usage: ./bin/toyATLASCMS.exe <seed> <number>" << std::endl;
+    std::cout << "Usage: ./bin/toyATLASCMSAlt.exe <seed> <number>" << std::endl;
     return 1;
   }
   
   int retVal = 0;
-  retVal += toyATLASCMS(std::stoi(argv[1]), std::stol(argv[2]));
+  retVal += toyATLASCMSAlt(std::stoi(argv[1]), std::stol(argv[2]));
   return retVal;
 }

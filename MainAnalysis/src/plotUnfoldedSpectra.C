@@ -1401,7 +1401,7 @@ int plotUnfoldedSpectra(const std::string inFileNamePP, const std::string inFile
 	  delete systHistVectPP.at(sI);
 	}
 	     
-	drawSyst(spectCanv_p, jtPtUnfolded_RecoGenAsymm_PP_h[ppPos][idPos][mI][absEtaPos][0], systValVectPP, xPointMinVal, xPointMaxVal);
+	drawSyst(spectCanv_p, jtPtUnfolded_RecoGenAsymm_PP_h[ppPos][idPos][mI][absEtaPos][0], &systValVectPP, xPointMinVal, xPointMaxVal);
 	
 	for(Int_t cI = 0; cI < nCentBins; ++cI){
 	  const std::string centStr = "Cent" + std::to_string(centBinsLow.at(cI)) + "to" + std::to_string(centBinsHi.at(cI));
@@ -1461,7 +1461,7 @@ int plotUnfoldedSpectra(const std::string inFileNamePP, const std::string inFile
 	  for(unsigned int sI = 0; sI < systHistVectPbPb.size(); ++sI){
 	    delete systHistVectPbPb.at(sI);
 	  }
-	  drawSyst(spectCanv_p, jtPtUnfolded_RecoGenAsymm_PbPb_h[tI][cI][idPos][mI][absEtaPos][0], systValVectPbPb, xPointMinVal, xPointMaxValUsed);	
+	  drawSyst(spectCanv_p, jtPtUnfolded_RecoGenAsymm_PbPb_h[tI][cI][idPos][mI][absEtaPos][0], &systValVectPbPb, xPointMinVal, xPointMaxValUsed);	
 	}
 	
 	jtPtUnfolded_RecoGenAsymm_PP_h[ppPos][idPos][mI][absEtaPos][0]->DrawCopy("HIST E1 P SAME");

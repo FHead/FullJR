@@ -13,6 +13,7 @@
 #include "Utility/include/doGlobalDebug.h"
 #include "Utility/include/mntToXRootdFileString.h"
 #include "Utility/include/returnRootFileContentsList.h"
+#include "Utility/include/plotUtilities.h"
 
 //5.02 TeV PYTHIA 6
 const Int_t nPtHat = 12;
@@ -20,9 +21,9 @@ const Int_t ptHat[nPtHat+1] = {15, 30, 50, 80, 100, 120, 170, 220, 280, 370, 460
 //const Double_t ptHatCrossSections[nPtHat+1] = {.5269, .03455, .004068, .0004959, .00007096, .00001223, .000003031, .0000007746, .0000001410, .00000003216, .00000001001, 0.00000};
 const Double_t ptHatCrossSections[nPtHat+1] = {.5335, .03378, .003778, .0004412, .0001511, .00006147, .00001018, .000002477, .0000006160, .0000001088, .00000002527,  0.000000007865, 0.00000000};
 
-const Int_t nPtHat8 = 12;
-const Int_t ptHat8[nPtHat8+1] = {0, 15, 30, 50, 80, 120, 170, 220, 280, 370, 460, 540, 10000};
-const Double_t ptHatCrossSections8[nPtHat8+1] = {67.89, .5269, .03455, .004068, .0004959, .00007096, .00001223, .000003031, .0000007746, .0000001410, .00000003216, .00000001001, 0.000000000};
+const Int_t nPtHat8 = 13;
+const Int_t ptHat8[nPtHat8+1] = {0, 15, 30, 50, 80, 100, 120, 170, 220, 280, 370, 460, 540, 10000};
+const Double_t ptHatCrossSections8[nPtHat8+1] = {67.89, .5269, .03455, .004068, .0004959, .000173, .00007096, .00001223, .000003031, .0000007746, .0000001410, .00000003216, .00000001001, 0.000000000};
 
 //2.76TeV
 //const Int_t nPtHat = 9;
@@ -235,6 +236,38 @@ int deriveDijetWeights(const std::string inConfigFileName, const bool isPYTHIA6)
 
   for(unsigned int iter = 0; iter < pthats.size()-1; iter++){
     std::cout << weights.at(iter)/weights.at(0) << ", ";
+  }
+  std::cout << std::endl;
+
+  std::cout << "Renorm weights2 for copy-paste: ";
+
+  for(unsigned int iter = 0; iter < pthats.size()-1; iter++){
+    std::string tempStr = "";
+    Double_t val = weights.at(iter)/weights.at(0);
+
+    if(val < 1.){
+      int mult = 0;
+      while(val < 1.){
+	++mult;
+	val *= 10;
+      }
+      
+      tempStr = prettyString(val, 6, false);
+      tempStr.replace(tempStr.find("."), 1, "");
+      for(int i = 0; i < mult-1; ++i){
+	tempStr = "0" + tempStr;
+      }
+      tempStr = "0." + tempStr;
+    }
+    else if(val < 10) tempStr = prettyString(val, 6, false);
+    else if(val < 100) tempStr = prettyString(val, 5, false);
+    else if(val < 1000) tempStr = prettyString(val, 4, false);
+    else if(val < 10000) tempStr = prettyString(val, 3, false);
+    else if(val < 100000) tempStr = prettyString(val, 2, false);
+    else if(val < 1000000) tempStr = prettyString(val, 1, false);
+    else tempStr = std::to_string((Int_t)val);
+
+    std::cout << tempStr << ", ";
   }
   std::cout << std::endl;
 

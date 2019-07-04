@@ -1,7 +1,9 @@
 #ifndef CHECKMAKEDIR_H
 #define CHECKMAKEDIR_H
 
+#include <iostream>
 #include <string>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>

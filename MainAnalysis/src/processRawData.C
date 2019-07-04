@@ -10,6 +10,7 @@
 #include "TDirectory.h"
 #include "TFile.h"
 #include "TH1D.h"
+#include "TH2D.h"
 #include "TLatex.h"
 #include "TLegend.h"
 #include "TMath.h"
@@ -71,47 +72,20 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 
   Float_t jtAbsEtaMaxTemp = cutProp.GetJtAbsEtaMax();
 
+  const Int_t nMaxDataJet = 10;
+  const Int_t nMaxCentBins = 4;
   const Int_t nJtAlgos = cutProp.GetNJtAlgos();
   std::vector<std::string> jtAlgos = cutProp.GetJtAlgos();
   std::vector<double> minJtPtCutTemp = cutProp.GetMinJtPtCut();
   std::vector<double> multiJtPtCutTemp = cutProp.GetMultiJtPtCut();
   std::vector<int> recoTruncPosTemp = cutProp.GetRecoTruncPos();
 
-  Int_t nRecoJtPtBinsSmallRCent0to10Temp = cutProp.GetNRecoJtPtBinsSmallRCent0to10();
-  Int_t nRecoJtPtBinsLargeRCent0to10Temp = cutProp.GetNRecoJtPtBinsLargeRCent0to10();
-  Int_t nGenJtPtSmallBinsSmallRCent0to10Temp = cutProp.GetNGenJtPtSmallBinsSmallRCent0to10();
-  Int_t nGenJtPtLargeBinsSmallRCent0to10Temp = cutProp.GetNGenJtPtLargeBinsSmallRCent0to10();
-  Int_t nGenJtPtSmallBinsLargeRCent0to10Temp = cutProp.GetNGenJtPtSmallBinsLargeRCent0to10();
-  Int_t nGenJtPtLargeBinsLargeRCent0to10Temp = cutProp.GetNGenJtPtLargeBinsLargeRCent0to10();
-
-  Int_t nRecoJtPtBinsSmallRCent10to30Temp = cutProp.GetNRecoJtPtBinsSmallRCent10to30();
-  Int_t nRecoJtPtBinsLargeRCent10to30Temp = cutProp.GetNRecoJtPtBinsLargeRCent10to30();
-  Int_t nGenJtPtSmallBinsSmallRCent10to30Temp = cutProp.GetNGenJtPtSmallBinsSmallRCent10to30();
-  Int_t nGenJtPtLargeBinsSmallRCent10to30Temp = cutProp.GetNGenJtPtLargeBinsSmallRCent10to30();
-  Int_t nGenJtPtSmallBinsLargeRCent10to30Temp = cutProp.GetNGenJtPtSmallBinsLargeRCent10to30();
-  Int_t nGenJtPtLargeBinsLargeRCent10to30Temp = cutProp.GetNGenJtPtLargeBinsLargeRCent10to30();
-
-  Int_t nRecoJtPtBinsSmallRCent30to50Temp = cutProp.GetNRecoJtPtBinsSmallRCent30to50();
-  Int_t nRecoJtPtBinsLargeRCent30to50Temp = cutProp.GetNRecoJtPtBinsLargeRCent30to50();
-  Int_t nGenJtPtSmallBinsSmallRCent30to50Temp = cutProp.GetNGenJtPtSmallBinsSmallRCent30to50();
-  Int_t nGenJtPtLargeBinsSmallRCent30to50Temp = cutProp.GetNGenJtPtLargeBinsSmallRCent30to50();
-  Int_t nGenJtPtSmallBinsLargeRCent30to50Temp = cutProp.GetNGenJtPtSmallBinsLargeRCent30to50();
-  Int_t nGenJtPtLargeBinsLargeRCent30to50Temp = cutProp.GetNGenJtPtLargeBinsLargeRCent30to50();
-
-  Int_t nRecoJtPtBinsSmallRCent50to90Temp = cutProp.GetNRecoJtPtBinsSmallRCent50to90();
-  Int_t nRecoJtPtBinsLargeRCent50to90Temp = cutProp.GetNRecoJtPtBinsLargeRCent50to90();
-  Int_t nGenJtPtSmallBinsSmallRCent50to90Temp = cutProp.GetNGenJtPtSmallBinsSmallRCent50to90();
-  Int_t nGenJtPtLargeBinsSmallRCent50to90Temp = cutProp.GetNGenJtPtLargeBinsSmallRCent50to90();
-  Int_t nGenJtPtSmallBinsLargeRCent50to90Temp = cutProp.GetNGenJtPtSmallBinsLargeRCent50to90();
-  Int_t nGenJtPtLargeBinsLargeRCent50to90Temp = cutProp.GetNGenJtPtLargeBinsLargeRCent50to90();
-
-  std::vector<Double_t> recoJtPtBinsSmallRTemp = cutProp.GetRecoJtPtBinsSmallR();
-  std::vector<Double_t> recoJtPtBinsLargeRTemp = cutProp.GetRecoJtPtBinsLargeR();
-  std::vector<Double_t> genJtPtSmallBinsSmallRTemp = cutProp.GetGenJtPtSmallBinsSmallR();
-  std::vector<Double_t> genJtPtLargeBinsSmallRTemp = cutProp.GetGenJtPtLargeBinsSmallR();
-  std::vector<Double_t> genJtPtSmallBinsLargeRTemp = cutProp.GetGenJtPtSmallBinsLargeR();
-  std::vector<Double_t> genJtPtLargeBinsLargeRTemp = cutProp.GetGenJtPtLargeBinsLargeR();
-
+  const int nPtBinsMax = 200;
+  int nGenJtPtBins[nMaxDataJet][nMaxCentBins];
+  double genJtPtBins[nMaxDataJet][nMaxCentBins][nPtBinsMax+1];
+  int nRecoJtPtBins[nMaxDataJet][nMaxCentBins];
+  double recoJtPtBins[nMaxDataJet][nMaxCentBins][nPtBinsMax+1];
+  
   Int_t nJtAbsEtaBinsTemp = cutProp.GetNJtAbsEtaBins();
   std::vector<Double_t> jtAbsEtaBinsLowTemp = cutProp.GetJtAbsEtaBinsLow();
   std::vector<Double_t> jtAbsEtaBinsHiTemp = cutProp.GetJtAbsEtaBinsHi();
@@ -137,81 +111,20 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
   std::vector<int> jtPfMinMult = cutProp.GetJtPfMinMult();
   std::vector<int> jtPfMinChgMult = cutProp.GetJtPfMinChgMult();
 
-  if(doLocalDebug || doGlobalDebug) std::cout << __FILE__ << ", " << __LINE__ << std::endl;
-
   if(nCentBinsTemp < 0) std::cout << "nCentBins less than 0. please check input file. return 1" << std::endl;
   if(nIDTemp < 0) std::cout << "nID less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsSmallRCent0to10Temp < 0) std::cout << "nRecoJtPtBinsSmallRCent0to10Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsLargeRCent0to10Temp < 0) std::cout << "nRecoJtPtBinsLargeRCent0to10Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsSmallRCent0to10Temp < 0) std::cout << "nGenJtPtSmallBinsSmallRCent0to10Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsSmallRCent0to10Temp < 0) std::cout << "nGenJtPtLargeBinsSmallRCent0to10Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsLargeRCent0to10Temp < 0) std::cout << "nGenJtPtSmallBinsLargeRCent0to10Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsLargeRCent0to10Temp < 0) std::cout << "nGenJtPtLargeBinsLargeRCent0to10Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsSmallRCent10to30Temp < 0) std::cout << "nRecoJtPtBinsSmallRCent10to30Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsLargeRCent10to30Temp < 0) std::cout << "nRecoJtPtBinsLargeRCent10to30Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsSmallRCent10to30Temp < 0) std::cout << "nGenJtPtSmallBinsSmallRCent10to30Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsSmallRCent10to30Temp < 0) std::cout << "nGenJtPtLargeBinsSmallRCent10to30Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsLargeRCent10to30Temp < 0) std::cout << "nGenJtPtSmallBinsLargeRCent10to30Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsLargeRCent10to30Temp < 0) std::cout << "nGenJtPtLargeBinsLargeRCent10to30Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsSmallRCent30to50Temp < 0) std::cout << "nRecoJtPtBinsSmallRCent30to50Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsLargeRCent30to50Temp < 0) std::cout << "nRecoJtPtBinsLargeRCent30to50Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsSmallRCent30to50Temp < 0) std::cout << "nGenJtPtSmallBinsSmallRCent30to50Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsSmallRCent30to50Temp < 0) std::cout << "nGenJtPtLargeBinsSmallRCent30to50Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsLargeRCent30to50Temp < 0) std::cout << "nGenJtPtSmallBinsLargeRCent30to50Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsLargeRCent30to50Temp < 0) std::cout << "nGenJtPtLargeBinsLargeRCent30to50Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsSmallRCent50to90Temp < 0) std::cout << "nRecoJtPtBinsSmallRCent50to90Temp less than 0. please check input file. return 1" << std::endl;
-  if(nRecoJtPtBinsLargeRCent50to90Temp < 0) std::cout << "nRecoJtPtBinsLargeRCent50to90Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsSmallRCent50to90Temp < 0) std::cout << "nGenJtPtSmallBinsSmallRCent50to90Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsSmallRCent50to90Temp < 0) std::cout << "nGenJtPtLargeBinsSmallRCent50to90Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtSmallBinsLargeRCent50to90Temp < 0) std::cout << "nGenJtPtSmallBinsLargeRCent50to90Temp less than 0. please check input file. return 1" << std::endl;
-  if(nGenJtPtLargeBinsLargeRCent50to90Temp < 0) std::cout << "nGenJtPtLargeBinsLargeRCent50to90Temp less than 0. please check input file. return 1" << std::endl;
   if(nJtAbsEtaBinsTemp < 0) std::cout << "nJtAbsEtaBinsTemp less than 0. please check input file. return 1" << std::endl;
   if(jtAbsEtaMaxTemp < -98) std::cout << "jtAbsEtaMaxTemp less than -98. please check input file. return 1" << std::endl;
 
-  if(nCentBinsTemp < 0 || nRecoJtPtBinsSmallRCent0to10Temp < 0 || nRecoJtPtBinsLargeRCent0to10Temp < 0 || nRecoJtPtBinsSmallRCent10to30Temp < 0 || nRecoJtPtBinsLargeRCent10to30Temp < 0 || nRecoJtPtBinsSmallRCent30to50Temp < 0 || nRecoJtPtBinsLargeRCent30to50Temp < 0 || nRecoJtPtBinsSmallRCent50to90Temp < 0 || nRecoJtPtBinsLargeRCent50to90Temp < 0 || nJtAbsEtaBinsTemp < 0 || jtAbsEtaMaxTemp < -98 || nIDTemp < 0){
+  if(nCentBinsTemp < 0 || nJtAbsEtaBinsTemp < 0 || jtAbsEtaMaxTemp < -98 || nIDTemp < 0){
     responseFile_p->Close();
     delete responseFile_p;
     return 1;
   }
 
   smallOrLargeR rReader;
-  if(!rReader.CheckNRecoJtPtBinsSmallRCent0to10(nRecoJtPtBinsSmallRCent0to10Temp)) return 1;
-  if(!rReader.CheckNRecoJtPtBinsLargeRCent0to10(nRecoJtPtBinsLargeRCent0to10Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsSmallRCent0to10(nGenJtPtSmallBinsSmallRCent0to10Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsSmallRCent0to10(nGenJtPtLargeBinsSmallRCent0to10Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsLargeRCent0to10(nGenJtPtSmallBinsLargeRCent0to10Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsLargeRCent0to10(nGenJtPtLargeBinsLargeRCent0to10Temp)) return 1;
-
-  if(!rReader.CheckNRecoJtPtBinsSmallRCent10to30(nRecoJtPtBinsSmallRCent10to30Temp)) return 1;
-  if(!rReader.CheckNRecoJtPtBinsLargeRCent10to30(nRecoJtPtBinsLargeRCent10to30Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsSmallRCent10to30(nGenJtPtSmallBinsSmallRCent10to30Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsSmallRCent10to30(nGenJtPtLargeBinsSmallRCent10to30Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsLargeRCent10to30(nGenJtPtSmallBinsLargeRCent10to30Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsLargeRCent10to30(nGenJtPtLargeBinsLargeRCent10to30Temp)) return 1;
-
-  if(!rReader.CheckNRecoJtPtBinsSmallRCent30to50(nRecoJtPtBinsSmallRCent30to50Temp)) return 1;
-  if(!rReader.CheckNRecoJtPtBinsLargeRCent30to50(nRecoJtPtBinsLargeRCent30to50Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsSmallRCent30to50(nGenJtPtSmallBinsSmallRCent30to50Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsSmallRCent30to50(nGenJtPtLargeBinsSmallRCent30to50Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsLargeRCent30to50(nGenJtPtSmallBinsLargeRCent30to50Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsLargeRCent30to50(nGenJtPtLargeBinsLargeRCent30to50Temp)) return 1;
-
-  if(!rReader.CheckNRecoJtPtBinsSmallRCent50to90(nRecoJtPtBinsSmallRCent50to90Temp)) return 1;
-  if(!rReader.CheckNRecoJtPtBinsLargeRCent50to90(nRecoJtPtBinsLargeRCent50to90Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsSmallRCent50to90(nGenJtPtSmallBinsSmallRCent50to90Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsSmallRCent50to90(nGenJtPtLargeBinsSmallRCent50to90Temp)) return 1;
-  if(!rReader.CheckNGenJtPtSmallBinsLargeRCent50to90(nGenJtPtSmallBinsLargeRCent50to90Temp)) return 1;
-  if(!rReader.CheckNGenJtPtLargeBinsLargeRCent50to90(nGenJtPtLargeBinsLargeRCent50to90Temp)) return 1;
-
-  if(!rReader.CheckRecoJtPtBinsSmallR(recoJtPtBinsSmallRTemp)) return 1;
-  if(!rReader.CheckRecoJtPtBinsLargeR(recoJtPtBinsLargeRTemp)) return 1;
-  if(!rReader.CheckGenJtPtSmallBinsSmallR(genJtPtSmallBinsSmallRTemp)) return 1;
-  if(!rReader.CheckGenJtPtLargeBinsSmallR(genJtPtLargeBinsSmallRTemp)) return 1;
-  if(!rReader.CheckGenJtPtSmallBinsLargeR(genJtPtSmallBinsLargeRTemp)) return 1;
-  if(!rReader.CheckGenJtPtLargeBinsLargeR(genJtPtLargeBinsLargeRTemp)) return 1;
 
   const Float_t jtAbsEtaMax = jtAbsEtaMaxTemp;
-  const Int_t nMaxCentBins = 4;
   const Int_t nCentBins = nCentBinsTemp;
 
   if(nCentBins > nMaxCentBins){
@@ -219,15 +132,7 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
     return 1;
   }
 
-  const Int_t nSmallLargeBins = 2;
-  const std::string smallLargeBinsStr[nSmallLargeBins] = {"SmallBins", "LargeBins"};
   const Int_t nMaxJtPtBins = 50;
-  const Int_t nRecoJtPtBinsArr = TMath::Max(TMath::Max(TMath::Max(nRecoJtPtBinsSmallRCent0to10Temp, nRecoJtPtBinsLargeRCent0to10Temp), TMath::Max(nRecoJtPtBinsSmallRCent10to30Temp, nRecoJtPtBinsLargeRCent10to30Temp)), TMath::Max(TMath::Max(nRecoJtPtBinsSmallRCent30to50Temp, nRecoJtPtBinsLargeRCent30to50Temp), TMath::Max(nRecoJtPtBinsSmallRCent50to90Temp, nRecoJtPtBinsLargeRCent50to90Temp)));
-  
-  if(nMaxJtPtBins < nRecoJtPtBinsArr){
-    std::cout << "nRecoJtPtBinsArr \'" << nRecoJtPtBinsArr << "\' is less than nMaxJtPtBins \'" << nMaxJtPtBins << "\'. return 1" << std::endl;
-    return 1;
-  }
 
   const Int_t nMaxJtAbsEtaBins = 6;
   const Int_t nJtAbsEtaBins = nJtAbsEtaBinsTemp;
@@ -304,12 +209,15 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 
   std::cout << "Checking for matched inputs..." << std::endl;
   TFile* inDataFile_p = TFile::Open(mntToXRootdFileString(fileList[0]).c_str(), "READ");
-  std::vector<std::string> dataTreeList = returnRootFileContentsList(inDataFile_p, "TTree", "JetAna");
+  std::vector<std::string> dataTreeList2 = returnRootFileContentsList(inDataFile_p, "TTree", "JetAna");
+  std::vector<std::string> dataTreeList;
+
+  Int_t mainTreePos = -1;
 
   unsigned int pos = 0;
-  while(dataTreeList.size() > pos){   
+  while(dataTreeList2.size() > pos){   
     bool isFound = false;
-    std::string tempJet = dataTreeList[pos];
+    std::string tempJet = dataTreeList2[pos];
     tempJet.replace(tempJet.find("/"), tempJet.size() - tempJet.find("/"), "");
 
     for(unsigned int jI = 0; jI < jetDirList.size(); ++jI){
@@ -319,8 +227,12 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
       }
     }
 
-    if(isFound) ++pos;
-    else dataTreeList.erase(dataTreeList.begin() + pos);
+    if(isFound){
+      dataTreeList.push_back(dataTreeList2[pos]);
+      mainTreePos = pos;
+      ++pos;
+    }
+    else ++pos;
   }
 
   inDataFile_p->Close();
@@ -329,19 +241,28 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 
   if(doLocalDebug || doGlobalDebug) std::cout << __FILE__ << ", " << __LINE__ << std::endl;
 
-  const Int_t nMaxDataJet = 10;
+
+  std::cout << "MAINTREEPOS: " << mainTreePos << std::endl;
   const Int_t nDataJet = dataTreeList.size();
+  const Int_t nDataJet2 = dataTreeList2.size();
 
   if(nMaxDataJet < nDataJet){
     std::cout << "nDataJet \'" << nDataJet << "\' is less than nMaxDataJet\'" << nMaxDataJet << "\'. return 1" << std::endl;
     return 1;
   }
 
+  if(nMaxDataJet < nDataJet2){
+    std::cout << "nDataJet2 \'" << nDataJet2 << "\' is less than nMaxDataJet\'" << nMaxDataJet << "\'. return 1" << std::endl;
+    return 1;
+  }
+
+
+  /*
   std::string outFileName = inDataFileName;
   while(outFileName.find("/") != std::string::npos){outFileName.replace(0, outFileName.find("/")+1, "");}
   if(outFileName.find(".txt") != std::string::npos) outFileName.replace(outFileName.find(".txt"), std::string(".txt").size(), "");
   else if(outFileName.find(".root") != std::string::npos) outFileName.replace(outFileName.find(".root"), std::string(".root").size(), "");
-
+  */
   /*
   std::string outFileName2 = inResponseName;
   while(outFileName2.find("/") != std::string::npos){outFileName2.replace(0, outFileName2.find("/")+1, "");}
@@ -351,7 +272,10 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
   checkMakeDir("output");
   checkMakeDir("output/" + dateStr);
   
-  outFileName = "output/" + dateStr + "/" + outFileName + "_ProcessRawData_";
+  std::string dataType = "dataPbPb";
+  if(isDataPP) dataType = "dataPP";
+
+  std::string outFileName = "output/" + dateStr + "/" + dataType + "_ProcessRawData_";
   if(tagStr.size() != 0) outFileName = outFileName + tagStr + "_";
   outFileName = outFileName + dateStr + ".root";
 
@@ -363,9 +287,16 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
   outFile_p->SetBit(TFile::kDevNull);
   TH1::AddDirectory(kFALSE);
   TDirectory* dir_p[nMaxDataJet];
-  TH1D* jtPtRaw_RecoGenSymm_h[nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins][nSmallLargeBins];
+  TH1D* jtPtRaw_RecoGenSymm_h[nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
   TH1D* jtPtRaw_RecoGenAsymm_h[nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
   TH1D* jtPtRaw_General_h[nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
+
+  TH2D* jtPtCorrR_General_h[nMaxDataJet][nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
+  TH1D* jtPtCorrR_Xaxis_General_h[nMaxDataJet][nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
+  TH1D* jtPtCorrR_XaxisMiss_General_h[nMaxDataJet][nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
+  TH1D* jtPtCorrR_Yaxis_General_h[nMaxDataJet][nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins];
+
+  
 
   TH1D* multijetAJ_All_h[nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins][nMaxJtPtBins];
   TH1D* multijetAJ_Pass_h[nMaxDataJet][nMaxCentBins][nMaxID][nMaxJtAbsEtaBins][nMaxJtPtBins];
@@ -398,71 +329,38 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
   Double_t minRecoJtPt = 99999999.;
   Double_t minGenJtPt = 99999999.;
 
-  const Int_t nMaxGeneralBins = 300;
-  Int_t nGeneralBins[nMaxDataJet];
-  std::vector<double> generalBinsSmallRTemp = cutProp.GetGeneralBinsSmallR();
-  std::vector<double> generalBinsLargeRTemp = cutProp.GetGeneralBinsLargeR();
-  Double_t generalBins[nMaxDataJet][nMaxGeneralBins+1];
+  const Int_t nMaxGeneralBins = 1000;
+  Int_t nGeneralBins = cutProp.GetNGeneralBins();
+  std::vector<double> tempGeneralBins = cutProp.GetGeneralBins();
+  Double_t generalBins[nMaxGeneralBins+1];
+  for(Int_t gI = 0; gI < nGeneralBins+1; ++gI){
+    generalBins[gI] = tempGeneralBins[gI];
+  }
 
   Int_t rValI[nMaxDataJet];
-  bool isSmallR[nMaxDataJet];
-  Int_t nRecoJtPtBins[nMaxDataJet][nMaxCentBins];
-  Int_t nGenJtPtSmallBins[nMaxDataJet][nMaxCentBins];
-  Int_t nGenJtPtLargeBins[nMaxDataJet][nMaxCentBins];
-  Int_t nGenJtPtBins[nMaxDataJet][nMaxCentBins][nSmallLargeBins];
-
-  Double_t recoJtPtBins[nMaxDataJet][nMaxCentBins][nMaxJtPtBins+1];
-  Double_t genJtPtSmallBins[nMaxDataJet][nMaxCentBins][nMaxJtPtBins+1];
-  Double_t genJtPtLargeBins[nMaxDataJet][nMaxCentBins][nMaxJtPtBins+1];
-  Double_t genJtPtBins[nMaxDataJet][nMaxCentBins][nSmallLargeBins][nMaxJtPtBins+1];
 
   for(Int_t jI = 0; jI < nDataJet; ++jI){
     std::string tempStr = dataTreeList[jI];
     tempStr.replace(tempStr.find("/"), tempStr.size() - tempStr.find("/"), "");
 
     rValI[jI] = getRVal(tempStr);
-    isSmallR[jI] = rReader.GetIsSmallR(rValI[jI]);
-
-    if(isSmallR[jI]){
-      nGeneralBins[jI] = cutProp.GetNGeneralBinsSmallR();
-      for(Int_t bI = 0; bI < nGeneralBins[jI]; ++bI){
-	generalBins[jI][bI] = generalBinsSmallRTemp[bI];
-      }
-    }
-    else{
-      nGeneralBins[jI] = cutProp.GetNGeneralBinsLargeR();
-      for(Int_t bI = 0; bI < nGeneralBins[jI]; ++bI){
-	generalBins[jI][bI] = generalBinsLargeRTemp[bI];
-      }
-    }
 
     for(Int_t cI = 0; cI < nCentBins; ++cI){
       std::string centStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);
 
-      nRecoJtPtBins[jI][cI] = rReader.GetSmallOrLargeRNBins(isSmallR[jI], false, false, centStr);
-      nGenJtPtSmallBins[jI][cI] = rReader.GetSmallOrLargeRNBins(isSmallR[jI], true, true, centStr);
-      nGenJtPtLargeBins[jI][cI] = rReader.GetSmallOrLargeRNBins(isSmallR[jI], true, false, centStr);
+      nGenJtPtBins[jI][cI] = cutProp.GetGenNBinsFromRValCent(rValI[jI], centStr);
+      nRecoJtPtBins[jI][cI] = cutProp.GetRecoNBinsFromRValCent(rValI[jI], centStr);
+      cutProp.GetGenBinsFromRValCent(rValI[jI], centStr, genJtPtBins[jI][cI]);
+      cutProp.GetRecoBinsFromRValCent(rValI[jI], centStr, recoJtPtBins[jI][cI]);
 
-      rReader.GetSmallOrLargeRBins(isSmallR[jI], false, nRecoJtPtBins[jI][cI]+1, recoJtPtBins[jI][cI], false);
-      rReader.GetSmallOrLargeRBins(isSmallR[jI], true, nGenJtPtSmallBins[jI][cI]+1, genJtPtSmallBins[jI][cI], true);
-      rReader.GetSmallOrLargeRBins(isSmallR[jI], true, nGenJtPtLargeBins[jI][cI]+1, genJtPtLargeBins[jI][cI], false);
 
       for(Int_t bIX = 0; bIX < nRecoJtPtBins[jI][cI]; ++bIX){
 	if(minRecoJtPt > recoJtPtBins[jI][cI][bIX]) minRecoJtPt = recoJtPtBins[jI][cI][bIX];
       }
 
-      nGenJtPtBins[jI][cI][0] = nGenJtPtSmallBins[jI][cI];
-      nGenJtPtBins[jI][cI][1] = nGenJtPtLargeBins[jI][cI];
-
-      for(Int_t binsI = 0; binsI < nSmallLargeBins; ++binsI){
-        for(Int_t bIX = 0; bIX < nGenJtPtBins[jI][cI][binsI]+1; ++bIX){
-          if(binsI == 0) genJtPtBins[jI][cI][binsI][bIX] = genJtPtSmallBins[jI][cI][bIX];
-          else if(binsI == 1) genJtPtBins[jI][cI][binsI][bIX] = genJtPtLargeBins[jI][cI][bIX];
-
-	  if(minGenJtPt > genJtPtBins[jI][cI][binsI][bIX]) minGenJtPt = genJtPtBins[jI][cI][binsI][bIX];
-        }
+      for(Int_t bIX = 0; bIX < nGenJtPtBins[jI][cI]+1; ++bIX){
+	if(minGenJtPt > genJtPtBins[jI][cI][bIX]) minGenJtPt = genJtPtBins[jI][cI][bIX];
       }
-
     }
   }
 
@@ -478,7 +376,19 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
     tempStr.replace(tempStr.find("/"), tempStr.size() - tempStr.find("/"), "");
     dir_p[jI] = (TDirectory*)outFile_p->mkdir(tempStr.c_str());
     std::cout << " " << jI << "/" << nDataJet << ": " << tempStr << std::endl;
+
+    std::string rStr = tempStr.substr(tempStr.find("ak")+2, tempStr.size());
+    if(rStr.find("Cs") != std::string::npos){
+      rStr.replace(0, 2, "");
+      rStr.replace(rStr.find("PU"), rStr.size(), "");
+    }
+    else{
+      rStr.replace(rStr.find("PF"), rStr.size(), "");
+    }
     
+    if(rStr.size() == 2) rStr = rStr.substr(0,1) + "." + rStr.substr(1,1);
+    else rStr = "0." + rStr;
+
     for(Int_t cI = 0; cI < nCentBins; ++cI){
       std::string centStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);      
       if(isDataPP) centStr = "PP_" + centStr;
@@ -488,17 +398,45 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
    	for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
    	  const std::string jtAbsEtaStr = "AbsEta" + prettyString(jtAbsEtaBinsLow[aI], 1, true) + "to" + prettyString(jtAbsEtaBinsHi[aI], 1, true);
 	  
-   	  for(Int_t binsI = 0; binsI < nSmallLargeBins; ++binsI){
-   	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI] = new TH1D(("jtPtRaw_RecoGenSymm_" + smallLargeBinsStr[binsI] + "_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), ";Raw Jet p_{T};Counts", nGenJtPtBins[jI][cI][binsI], genJtPtBins[jI][cI][binsI]);
-   	    std::vector<TH1*> tempVect = {jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]};
-   	    setSumW2(tempVect);
-   	    centerTitles(tempVect);
-   	  }
-	  
-   	  jtPtRaw_RecoGenAsymm_h[jI][cI][idI][aI] = new TH1D(("jtPtRaw_RecoGenAsymm_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), ";Raw Jet p_{T};Counts", nRecoJtPtBins[jI][cI], recoJtPtBins[jI][cI]);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI] = new TH1D(("jtPtRaw_RecoGenSymm_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), ";Raw Jet p_{T};Counts", nGenJtPtBins[jI][cI], genJtPtBins[jI][cI]);
+	
+	  jtPtRaw_RecoGenAsymm_h[jI][cI][idI][aI] = new TH1D(("jtPtRaw_RecoGenAsymm_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), ";Raw Jet p_{T};Counts", nRecoJtPtBins[jI][cI], recoJtPtBins[jI][cI]);
 
-   	  jtPtRaw_General_h[jI][cI][idI][aI] = new TH1D(("jtPtRaw_General_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), ";Raw Jet p_{T};Counts", nGeneralBins[jI], generalBins[jI]);
+   	  jtPtRaw_General_h[jI][cI][idI][aI] = new TH1D(("jtPtRaw_General_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), ";Raw Jet p_{T};Counts", nGeneralBins, generalBins);	 
+
+
+	  for(Int_t jI2 = 0; jI2 < nDataJet2; ++jI2){
+	    if(mainTreePos == jI2) continue;
+
+ 	    std::string tempStr2 = dataTreeList2[jI2];
+	    tempStr2.replace(tempStr2.find("/"), tempStr2.size() - tempStr2.find("/"), "");
+
+	    std::string rStr2 = tempStr2.substr(tempStr2.find("ak")+2, tempStr2.size());
+	    if(rStr2.find("Cs") != std::string::npos){
+	      rStr2.replace(0, 2, "");
+	      rStr2.replace(rStr2.find("PU"), rStr2.size(), "");
+	    }
+	    else{
+	      rStr2.replace(rStr2.find("PF"), rStr2.size(), "");
+	    }
+
+	    if(rStr2.size() == 2) rStr2 = rStr2.substr(0,1) + "." + rStr2.substr(1,1);
+	    else rStr2 = "0." + rStr2;
 	  
+	    jtPtCorrR_General_h[jI][jI2][cI][idI][aI] = new TH2D(("jtPtCorrR" + tempStr2 + "_General_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), (";Jet p_{T} R=" + rStr2 + ";Jet p_{T} R=" + rStr).c_str(), nGeneralBins, generalBins, nGeneralBins, generalBins);
+
+	    jtPtCorrR_Xaxis_General_h[jI][jI2][cI][idI][aI] = new TH1D(("jtPtCorrR" + tempStr2 + "_Xaxis_General_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), (";Jet p_{T} R=" + rStr + ";Counts").c_str(), nGeneralBins, generalBins);
+
+	    jtPtCorrR_XaxisMiss_General_h[jI][jI2][cI][idI][aI] = new TH1D(("jtPtCorrR" + tempStr2 + "_XaxisMiss_General_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), (";Jet p_{T} R=" + rStr + ";Counts").c_str(), nGeneralBins, generalBins);
+
+	    jtPtCorrR_Yaxis_General_h[jI][jI2][cI][idI][aI] = new TH1D(("jtPtCorrR" + tempStr2 + "_Yaxis_General_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_h").c_str(), (";Jet p_{T} R=" + rStr2 + ";Counts").c_str(), nGeneralBins, generalBins);
+
+	    std::vector<TH1*> tempVect = {jtPtCorrR_General_h[jI][jI2][cI][idI][aI], jtPtCorrR_Xaxis_General_h[jI][jI2][cI][idI][aI], jtPtCorrR_XaxisMiss_General_h[jI][jI2][cI][idI][aI], jtPtCorrR_Yaxis_General_h[jI][jI2][cI][idI][aI]};
+	    setSumW2(tempVect);
+	    centerTitles(tempVect);
+	  }
+
+
 	  for(Int_t jIter = 0; jIter < nRecoJtPtBins[jI][cI]; ++jIter){
 	    if(jIter < nRecoJtPtBins[jI][cI]){
 	      const std::string jtPtStr = "JtPt" + prettyString(recoJtPtBins[jI][cI][jIter], 1, true) + "to" + prettyString(recoJtPtBins[jI][cI][jIter+1], 1, true);
@@ -506,7 +444,7 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	      multijetAJ_All_h[jI][cI][idI][aI][jIter] = new TH1D(("multijetAJ_All_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_" + jtPtStr + "_h").c_str(), ";Multijet A_{J};Counts", nMultijetAJ, multijetAJ);
 	      multijetAJ_Pass_h[jI][cI][idI][aI][jIter] = new TH1D(("multijetAJ_Pass_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_" + jtPtStr + "_h").c_str(), ";Multijet A_{J};Counts", nMultijetAJ, multijetAJ);
 	      multijetAJ_Fail_h[jI][cI][idI][aI][jIter] = new TH1D(("multijetAJ_Fail_" + tempStr + "_" + centStr + "_" + idStr[idI] + "_" + jtAbsEtaStr + "_" + jtPtStr + "_h").c_str(), ";Multijet A_{J};Counts", nMultijetAJ, multijetAJ);
-	      
+	    	      
 	      std::vector<TH1*> tempVect = {multijetAJ_All_h[jI][cI][idI][aI][jIter], multijetAJ_Pass_h[jI][cI][idI][aI][jIter], multijetAJ_Fail_h[jI][cI][idI][aI][jIter]};
 	      setSumW2(tempVect);
 	      centerTitles(tempVect);
@@ -518,7 +456,7 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	    }
 	  }
 	  
-	  std::vector<TH1*> tempVect = {jtPtRaw_RecoGenAsymm_h[jI][cI][idI][aI], jtPtRaw_General_h[jI][cI][idI][aI]};
+	  std::vector<TH1*> tempVect = {jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI], jtPtRaw_RecoGenAsymm_h[jI][cI][idI][aI], jtPtRaw_General_h[jI][cI][idI][aI]};
 	  setSumW2(tempVect);
 	  centerTitles(tempVect);
 	}
@@ -526,15 +464,14 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
     }
   }
   
-  if(doLocalDebug || doGlobalDebug) std::cout << __FILE__ << ", " << __LINE__ << std::endl;
-  
-  std::cout << "Processing " << fileList.size() << " files..., isDataPP == " << isDataPP << std::endl;
-  std::cout << "Jets: ";
-  for(unsigned int jI = 0; jI < dataTreeList.size(); ++jI){
-    std::cout << dataTreeList[jI] << ", ";
+  for(Int_t jI = 0; jI < nDataJet; ++jI){  
+    std::cout << dataTreeList[jI] << ", nBins (" << nGeneralBins << "): ";
+
+    for(Int_t gI = 0; gI < nGeneralBins; ++gI){
+      std::cout << generalBins[gI] << ", ";
+    }
+    std::cout << generalBins[nGeneralBins] << "." << std::endl;
   }
-  std::cout << std::endl;
-  
   
   //Jet Var  
   const Int_t nMaxJet = 500;
@@ -581,10 +518,11 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
     TTree* jetTrees_p[nMaxDataJet];
     TTree* hiTree_p = (TTree*)inDataFile_p->Get("hiEvtAnalyzer/HiTree");
     TTree* skimTree_p = (TTree*)inDataFile_p->Get("skimanalysis/HltTree");
+
     
-    for(Int_t jI = 0; jI < nDataJet; ++jI){
+    for(Int_t jI = 0; jI < nDataJet2; ++jI){
       jetTrees_p[jI] = NULL;
-      jetTrees_p[jI] = (TTree*)inDataFile_p->Get(dataTreeList[jI].c_str());
+      jetTrees_p[jI] = (TTree*)inDataFile_p->Get(dataTreeList2[jI].c_str());
       
       jetTrees_p[jI]->SetBranchStatus("*", 0);
       jetTrees_p[jI]->SetBranchStatus("nref", 1);
@@ -664,9 +602,10 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
     for(Int_t entry = 0; entry < nEntries; ++entry){
       if(nEntries >= 50000 && entry%printInterval == 0) std::cout << " Entry: " << entry << "/" << nEntries << std::endl;
       
-      //      std::cout << __LINE__ << std::endl;
+      //std::cout << __LINE__ << std::endl;
       hiTree_p->GetEntry(entry);
       skimTree_p->GetEntry(entry);
+
 
       globalSel.setVz(vz_);
       globalSel.setHiHF(hiHF_);
@@ -676,7 +615,7 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
       globalSel.setHBHENoiseFilterResultRun2Loose(HBHENoiseFilterResultRun2Loose_);
       globalSel.setPclusterCompatibilityFilter(pclusterCompatibilityFilter_);
 
-      //      std::cout << __LINE__ << std::endl;
+      //std::cout << __LINE__ << std::endl;
 
       if(!globalSel.isGood()) continue;
     
@@ -691,9 +630,10 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	if(centPos[0] < 0) continue;
       }
 
-      //      std::cout << __LINE__ << std::endl;
+      //std::cout << __LINE__ << std::endl;
 
-      for(Int_t tI = 0; tI < nDataJet; ++tI){jetTrees_p[tI]->GetEntry(entry);}
+      for(Int_t tI = 0; tI < nDataJet2; ++tI){jetTrees_p[tI]->GetEntry(entry);}
+	
 
       for(Int_t tI = 0; tI < nDataJet; ++tI){
 	Double_t tempLeadingPt_ = -999;
@@ -702,24 +642,27 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	std::vector<Double_t> tempSubleadingPhi_;
 	Int_t tempLeadingPos_ = -1;
 
-	//	std::cout << __LINE__ << std::endl;
+	Int_t tIPos = mainTreePos;
 
-	for(Int_t jI = 0; jI < nref_[tI]; ++jI){
-	  if(TMath::Abs(jteta_[tI][jI]) > jtAbsEtaMax) continue;
+	//std::cout << __LINE__ << std::endl;
+
+	for(Int_t jI = 0; jI < nref_[tIPos]; ++jI){
+	  if(TMath::Abs(jteta_[tIPos][jI]) > jtAbsEtaMax) continue;
 	  
-	  if(jtpt_[tI][jI] > tempLeadingPt_){
-	    tempLeadingPt_ = jtpt_[tI][jI];
-	    tempLeadingPhi_ = jtphi_[tI][jI];
+	  if(jtpt_[tIPos][jI] > tempLeadingPt_){
+	    tempLeadingPt_ = jtpt_[tIPos][jI];
+	    tempLeadingPhi_ = jtphi_[tIPos][jI];
 	    tempLeadingPos_ = jI;
 	  }
 	}
 
+	//std::cout << __LINE__ << std::endl;
+
+      
 	for(auto const & cent : centPos){
 	  Int_t tempLeadingFillPos_ = -1;
-	
-	  //	  std::cout << __LINE__ << std::endl;
-	  	       
- 	  if(/*tempLeadingPt_ > jtPtBins[0] && */tempLeadingPt_ > minJtPtCut[tI]){
+		  	       
+ 	  if(tempLeadingPt_ > minJtPtCut[tIPos]){
 	    for(Int_t jI = 0; jI < nRecoJtPtBins[tI][cent]; ++jI){
 	      if(recoJtPtBins[tI][cent][jI] <= tempLeadingPt_ && tempLeadingPt_ < recoJtPtBins[tI][cent][jI+1]){
 		tempLeadingFillPos_ = jI;
@@ -728,15 +671,15 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	    }
 	    if(tempLeadingFillPos_ < 0) tempLeadingFillPos_ = nRecoJtPtBins[tI][cent]-1;
 	    
-	    for(Int_t jI = 0; jI < nref_[tI]; ++jI){
+	    for(Int_t jI = 0; jI < nref_[tIPos]; ++jI){
 	      if(jI == tempLeadingPos_) continue;
-	      if(TMath::Abs(jteta_[tI][jI]) > jtAbsEtaMax) continue;
-	      if(jtpt_[tI][jI] < multiJtPtCut[jI]) continue;
-	      if(TMath::Abs(getDPHI(tempLeadingPhi_, jtphi_[tI][jI])) < 3.*TMath::Pi()/4.) continue;
-	      //	    if(TMath::Abs(getDPHI(tempLeadingPhi_, jtphi_[tI][jI])) < 5.*TMath::Pi()/8. && TMath::Abs(getDPHI(tempLeadingPhi_, jtphi_[tI][jI])) > 3.*TMath::Pi()/8.) continue;
+	      if(TMath::Abs(jteta_[tIPos][jI]) > jtAbsEtaMax) continue;
+	      if(jtpt_[tIPos][jI] < multiJtPtCut[jI]) continue;
+	      if(TMath::Abs(getDPHI(tempLeadingPhi_, jtphi_[tIPos][jI])) < 3.*TMath::Pi()/4.) continue;
+	      //	    if(TMath::Abs(getDPHI(tempLeadingPhi_, jtphi_[tIPos][jI])) < 5.*TMath::Pi()/8. && TMath::Abs(getDPHI(tempLeadingPhi_, jtphi_[tIPos][jI])) > 3.*TMath::Pi()/8.) continue;
 	      
-	      tempSubleadingPt_.push_back(jtpt_[tI][jI]);
-	      tempSubleadingPhi_.push_back(jtphi_[tI][jI]);
+	      tempSubleadingPt_.push_back(jtpt_[tIPos][jI]);
+	      tempSubleadingPhi_.push_back(jtphi_[tIPos][jI]);
 	    }
 	    
 	    if(tempSubleadingPt_.size() == 0){
@@ -752,71 +695,135 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	  }
 	  else tempLeadingPos_ = -1;
 
-	  //	  std::cout << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << std::endl;
 	  
 	  Int_t leadID[nMaxID];
 	  for(Int_t idI = 0; idI < nID; ++idI){leadID[idI] = false;}
+       
+	  bool jetIsUsed[nMaxDataJet][nMaxID][nMaxJtAbsEtaBins][nMaxJet];	  
+	
+	  //std::cout << __LINE__ << std::endl;
+	  
+	  for(Int_t tI2 = 0; tI2 < nDataJet2; ++tI2){
+	    if(tIPos == tI2) continue;
 
-	  for(Int_t jI = 0; jI < nref_[tI]; ++jI){
-	    if(TMath::Abs(jteta_[tI][jI]) > jtAbsEtaMax) continue;
-	    if(jtpt_[tI][jI] < minRecoJtPt && jtpt_[tI][jI] < minGenJtPt) continue;
+	  //std::cout << __LINE__ << std::endl;
+
+	    for(Int_t jI2 = 0; jI2 < nref_[tI2]; ++jI2){
+	      if(TMath::Abs(jteta_[tI2][jI2]) > jtAbsEtaMax) continue;
+	      if(jtpt_[tI2][jI2] < minRecoJtPt && jtpt_[tI2][jI2] < minGenJtPt) continue;
+	      
+	      for(Int_t idI = 0; idI < nID; ++idI){
+		for(Int_t aI = 0; aI < nMaxJtAbsEtaBins; ++aI){
+		  jetIsUsed[tI2][idI][aI][jI2] = true;
+		}
+
+	  //std::cout << __LINE__ << std::endl;
+		
+		if(jtPfCHMFCutLow[idI] > jtPfCHMF_[tI2][jI2]) continue;
+		if(jtPfCHMFCutHi[idI] < jtPfCHMF_[tI2][jI2]) continue;
+		if(jtPfMUMFCutLow[idI] > jtPfMUMF_[tI2][jI2]) continue;
+		if(jtPfMUMFCutHi[idI] < jtPfMUMF_[tI2][jI2]) continue;
+		if(jtPfNHF_[tI2][jI2] < jtPfNHFCutLow[idI]) continue;
+		if(jtPfNHF_[tI2][jI2] > jtPfNHFCutHi[idI]) continue;
+		if(jtPfNEF_[tI2][jI2] < jtPfNEFCutLow[idI]) continue;
+		if(jtPfNEF_[tI2][jI2] > jtPfNEFCutHi[idI]) continue;
+		if(jtPfMUF_[tI2][jI2] < jtPfMUFCutLow[idI]) continue;
+		if(jtPfMUF_[tI2][jI2] > jtPfMUFCutHi[idI]) continue;
+		if(jtPfCHF_[tI2][jI2] < jtPfCHFCutLow[idI]) continue;
+		if(jtPfCHF_[tI2][jI2] > jtPfCHFCutHi[idI]) continue;
+		if(jtPfCEF_[tI2][jI2] < jtPfCEFCutLow[idI]) continue;
+		if(jtPfCEF_[tI2][jI2] > jtPfCEFCutHi[idI]) continue;
+		
+		if(jtPfCEM_[tI2][jI2] + jtPfNEM_[tI2][jI2] + jtPfCHM_[tI2][jI2] + jtPfNHM_[tI2][jI2] + jtPfMUM_[tI2][jI2] < jtPfMinMult[idI]) continue;
+		if(jtPfCHM_[tI2][jI2] < jtPfMinChgMult[idI]) continue;
+		
+		for(Int_t aI = 0; aI < nMaxJtAbsEtaBins; ++aI){
+		  jetIsUsed[tI2][idI][aI][jI2] = false;
+		}
+	      }		
+	    }    	      
+	  }
+	  
+	  //std::cout << __LINE__ << std::endl;
+
+	  for(Int_t jI = 0; jI < nref_[tIPos]; ++jI){
+	    if(TMath::Abs(jteta_[tIPos][jI]) > jtAbsEtaMax) continue;
+	    if(jtpt_[tIPos][jI] < minRecoJtPt && jtpt_[tIPos][jI] < minGenJtPt) continue;
 
 	    std::vector<int> jtAbsEtaPoses;
 	    for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
-	      if(TMath::Abs(jteta_[tI][jI]) >= jtAbsEtaBinsLow[aI] && TMath::Abs(jteta_[tI][jI]) < jtAbsEtaBinsHi[aI]){
+	      if(TMath::Abs(jteta_[tIPos][jI]) >= jtAbsEtaBinsLow[aI] && TMath::Abs(jteta_[tIPos][jI]) < jtAbsEtaBinsHi[aI]){
 		jtAbsEtaPoses.push_back(aI);
 	      }
 	    }
+	  //std::cout << __LINE__ << std::endl;
 	    
 	    std::vector<int> idPoses;
 	    //	  bool passesLast = false;
 	    
 	    for(Int_t idI = 0; idI < nID; ++idI){
-	      if(jtPfCHMFCutLow[idI] > jtPfCHMF_[tI][jI]) continue;
-	      if(jtPfCHMFCutHi[idI] < jtPfCHMF_[tI][jI]) continue;
-	      if(jtPfMUMFCutLow[idI] > jtPfMUMF_[tI][jI]) continue;
-	      if(jtPfMUMFCutHi[idI] < jtPfMUMF_[tI][jI]) continue;
-	      if(jtPfNHF_[tI][jI] < jtPfNHFCutLow[idI]) continue;
-	      if(jtPfNHF_[tI][jI] > jtPfNHFCutHi[idI]) continue;
-	      if(jtPfNEF_[tI][jI] < jtPfNEFCutLow[idI]) continue;
-	      if(jtPfNEF_[tI][jI] > jtPfNEFCutHi[idI]) continue;
-	      if(jtPfMUF_[tI][jI] < jtPfMUFCutLow[idI]) continue;
-	      if(jtPfMUF_[tI][jI] > jtPfMUFCutHi[idI]) continue;
-	      if(jtPfCHF_[tI][jI] < jtPfCHFCutLow[idI]) continue;
-	      if(jtPfCHF_[tI][jI] > jtPfCHFCutHi[idI]) continue;
-	      if(jtPfCEF_[tI][jI] < jtPfCEFCutLow[idI]) continue;
-	      if(jtPfCEF_[tI][jI] > jtPfCEFCutHi[idI]) continue;
-	      
-	      //std::cout << jtPfMinMult.size() << ", " << jtPfMinChgMult.size() << std::endl;
+	      if(jtPfCHMFCutLow[idI] > jtPfCHMF_[tIPos][jI]) continue;
+	      if(jtPfCHMFCutHi[idI] < jtPfCHMF_[tIPos][jI]) continue;
+	      if(jtPfMUMFCutLow[idI] > jtPfMUMF_[tIPos][jI]) continue;
+	      if(jtPfMUMFCutHi[idI] < jtPfMUMF_[tIPos][jI]) continue;
+	      if(jtPfNHF_[tIPos][jI] < jtPfNHFCutLow[idI]) continue;
+	      if(jtPfNHF_[tIPos][jI] > jtPfNHFCutHi[idI]) continue;
+	      if(jtPfNEF_[tIPos][jI] < jtPfNEFCutLow[idI]) continue;
+	      if(jtPfNEF_[tIPos][jI] > jtPfNEFCutHi[idI]) continue;
+	      if(jtPfMUF_[tIPos][jI] < jtPfMUFCutLow[idI]) continue;
+	      if(jtPfMUF_[tIPos][jI] > jtPfMUFCutHi[idI]) continue;
+	      if(jtPfCHF_[tIPos][jI] < jtPfCHFCutLow[idI]) continue;
+	      if(jtPfCHF_[tIPos][jI] > jtPfCHFCutHi[idI]) continue;
+	      if(jtPfCEF_[tIPos][jI] < jtPfCEFCutLow[idI]) continue;
+	      if(jtPfCEF_[tIPos][jI] > jtPfCEFCutHi[idI]) continue;
 
-	      if(jtPfCEM_[tI][jI] + jtPfNEM_[tI][jI] + jtPfCHM_[tI][jI] + jtPfNHM_[tI][jI] + jtPfMUM_[tI][jI] < jtPfMinMult[idI]) continue;
-	      if(jtPfCHM_[tI][jI] < jtPfMinChgMult[idI]) continue;
-	      
-	      //	    if(idI == nID-1) passesLast = true;
+	      if(jtPfCEM_[tIPos][jI] + jtPfNEM_[tIPos][jI] + jtPfCHM_[tIPos][jI] + jtPfNHM_[tIPos][jI] + jtPfMUM_[tIPos][jI] < jtPfMinMult[idI]) continue;
+	      if(jtPfCHM_[tIPos][jI] < jtPfMinChgMult[idI]) continue;
 
 	      if(tempLeadingPos_ == jI) leadID[idI] = true;
 	      
 	      idPoses.push_back(idI);
 	    }
 
-	    //	    std::cout << __LINE__ << std::endl;
-
-	    //	  if(dataTreeList[tI].find("ak4PF") != std::string::npos && !passesLast && jtpt_[tI][jI] > 600.){
-	    //std::cout << "Jet fail: " << entry << ", " << jtpt_[tI][jI] << std::endl;
-	    //	  }
+	    if(jtAbsEtaPoses.size() == 0 && idPoses.size() == 0) continue;
+	  //std::cout << __LINE__ << std::endl;
 	  
+	    
 	    for(unsigned int aI = 0; aI < jtAbsEtaPoses.size(); ++aI){
 	      for(unsigned int idI = 0; idI < idPoses.size(); ++idI){
-		bool goodReco[nSmallLargeBins] = {(jtpt_[tI][jI] >= genJtPtBins[tI][cent][0][0] && jtpt_[tI][jI] < genJtPtBins[tI][cent][0][nGenJtPtBins[tI][cent][0]]), (jtpt_[tI][jI] >= genJtPtBins[tI][cent][1][0] && jtpt_[tI][jI] < genJtPtBins[tI][cent][1][nGenJtPtBins[tI][cent][1]])};
-		bool goodRecoTrunc = (jtpt_[tI][jI] >= recoJtPtBins[tI][cent][0] && jtpt_[tI][jI] < recoJtPtBins[tI][cent][nRecoJtPtBins[tI][cent]]);//since we do rDep binning keep same as goodreco for now
+		bool goodReco = (jtpt_[tIPos][jI] >= genJtPtBins[tI][cent][0] && jtpt_[tIPos][jI] < genJtPtBins[tI][cent][nGenJtPtBins[tI][cent]]);
+		bool goodRecoTrunc = (jtpt_[tIPos][jI] >= recoJtPtBins[tI][cent][0] && jtpt_[tIPos][jI] < recoJtPtBins[tI][cent][nRecoJtPtBins[tI][cent]]);//since we do rDep binning keep same as goodreco for now
 	      
-		bool goodRecoGeneral = jtpt_[tI][jI] >= generalBins[tI][0] && jtpt_[tI][jI] < generalBins[tI][nGeneralBins[tI]];
+		bool goodRecoGeneral = jtpt_[tIPos][jI] >= generalBins[0] && jtpt_[tIPos][jI] < generalBins[nGeneralBins];
 	      
-		if(goodReco[0]) jtPtRaw_RecoGenSymm_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]][0]->Fill(jtpt_[tI][jI]);
-		if(goodReco[1]) jtPtRaw_RecoGenSymm_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]][1]->Fill(jtpt_[tI][jI]);
-		if(goodRecoTrunc) jtPtRaw_RecoGenAsymm_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tI][jI]);
-		if(goodRecoGeneral) jtPtRaw_General_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tI][jI]);
+		if(goodReco) jtPtRaw_RecoGenSymm_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tIPos][jI]);
+		if(goodRecoTrunc) jtPtRaw_RecoGenAsymm_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tIPos][jI]);
+		if(goodRecoGeneral){
+		  jtPtRaw_General_h[tI][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tIPos][jI]);
+		  
+		  for(Int_t tI2 = 0; tI2 < nDataJet2; ++tI2){
+		    if(tIPos == tI2) continue;
+
+		    //		    bool noMatchFound= true;
+		    for(Int_t jI2 = 0; jI2 < nref_[tI2]; ++jI2){
+		      if(TMath::Abs(jteta_[tI2][jI2]) > jtAbsEtaMax) continue;
+		      if(jtpt_[tI2][jI2] < minRecoJtPt && jtpt_[tI2][jI2] < minGenJtPt) continue;
+		      if(jetIsUsed[tI2][idPoses[idI]][jtAbsEtaPoses[aI]][jI2]) continue;
+		      
+		      if(getDR(jteta_[tI2][jI2], jtphi_[tI2][jI2], jteta_[tIPos][jI], jtphi_[tIPos][jI]) < 0.3){
+			jetIsUsed[tI2][idPoses[idI]][jtAbsEtaPoses[aI]][jI2] = true;
+			jtPtCorrR_General_h[tI][tI2][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tI2][jI2], jtpt_[tIPos][jI]);
+			jtPtCorrR_Xaxis_General_h[tI][tI2][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tI2][jI2]);
+			jtPtCorrR_Yaxis_General_h[tI][tI2][cent][idPoses[idI]][jtAbsEtaPoses[aI]]->Fill(jtpt_[tIPos][jI]);
+			//			noMatchFound = false;
+			break;
+		      }
+		    }
+		  }
+		}
 	      }
+	  //std::cout << __LINE__ << std::endl;
 
 	      if(tempLeadingPos_ == jI){
 		double axis = tempLeadingPhi_;
@@ -838,66 +845,73 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 		    }
 		  }
 		}
+	  //std::cout << __LINE__ << std::endl;
 
-		//		std::cout << __LINE__ << std::endl;
-		
 		double projSub = 0;
-		//		std::cout << __LINE__ << std::endl;
 		for(unsigned int pI = 0; pI < TMath::Min((unsigned int)2, (unsigned int)tempSubleadingPt_.size()); ++pI){
-		  //		std::cout << __LINE__ << std::endl;
 		  projSub += tempSubleadingPt_[pI]*TMath::Cos(TMath::Abs(getDPHI(axis, tempSubleadingPhi_[pI])));
-		  //		std::cout << __LINE__ << std::endl;
 		}
 
-		//		std::cout << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << std::endl;
 
 		double aj = (tempLeadingPt_ - projSub)/(tempLeadingPt_ + projSub);
-
-		//		std::cout << __LINE__ << std::endl;
 		
+	  //std::cout << __LINE__ << std::endl;
+	      		
 		for(Int_t idI = 0; idI < nID; ++idI){
-		  
-		  //		  std::cout << __LINE__ << std::endl;
-
+	  //std::cout << __LINE__ << std::endl;
 		  if(aj < multijetAJ[0]) aj = (multijetAJ[0] + multijetAJ[1])/2.;
 		  else if(aj > multijetAJ[nMultijetAJ]) aj = (multijetAJ[nMultijetAJ - 1] + multijetAJ[nMultijetAJ])/2.;
+	  //std::cout << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << ", " << aj << std::endl;
+	  //std::cout << __LINE__ << ", " << tI << std::endl;
+	  //std::cout << __LINE__ << ", " << idI << std::endl;
+	  //std::cout << __LINE__ << ", " << tempLeadingFillPos_ << std::endl;
+	  //std::cout << __LINE__ << ", " << aI << std::endl;
+	  //std::cout << __LINE__ << ", " << jtAbsEtaPoses[aI] << std::endl;
 	
-		  //		std::cout << __LINE__ << std::endl;
-
-		  //		std::cout << nRecoJtPtBins[tI][cent] << std::endl;
-
-		  //		std::cout << tI << ", " << cent << ", " << idI << ", " << jtAbsEtaPoses[aI] << ", " << tempLeadingFillPos_ << std::endl;
-
 		  multijetAJ_All_h[tI][cent][idI][jtAbsEtaPoses[aI]][tempLeadingFillPos_]->Fill(aj);
-		  //		std::cout << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << std::endl;
 
 		  if(leadID[idI]) multijetAJ_Pass_h[tI][cent][idI][jtAbsEtaPoses[aI]][tempLeadingFillPos_]->Fill(aj);
 		  else multijetAJ_Fail_h[tI][cent][idI][jtAbsEtaPoses[aI]][tempLeadingFillPos_]->Fill(aj);
-		  //		std::cout << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << std::endl;
 		}
-		//std::cout << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << std::endl;
 	      }
-		//std::cout << __LINE__ << std::endl;
 	    }
-		//std::cout << __LINE__ << std::endl;
-	  }      
-		//std::cout << __LINE__ << std::endl;
-	}
-		//std::cout << __LINE__ << std::endl;
-      }
-		//std::cout << __LINE__ << std::endl;
-    }
+	  }
+	
+	  //All jets processed	
+	  for(Int_t tI2 = 0; tI2 < nDataJet2; ++tI2){
+	    if(tIPos == tI2) continue;
+	    	    
+	    for(Int_t jI2 = 0; jI2 < nref_[tI2]; ++jI2){
+	      if(TMath::Abs(jteta_[tI2][jI2]) > jtAbsEtaMax) continue;
+	      if(jtpt_[tI2][jI2] < minRecoJtPt && jtpt_[tI2][jI2] < minGenJtPt) continue;
+	      
+	      for(Int_t idI = 0; idI < nID; ++idI){
+		for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
+	  
+		  if(jetIsUsed[tI2][idI][aI][jI2]) continue;
 
-    //std::cout << __LINE__ << std::endl;
+		  jtPtCorrR_XaxisMiss_General_h[tI][tI2][cent][idI][aI]->Fill(jtpt_[tI2][jI2]);
+
+		}		
+	      }
+	    }
+	  }
+	}
+      }
+    }
 
     inDataFile_p->Close();
     delete inDataFile_p;
   }
 
-  if(doLocalDebug || doGlobalDebug) std::cout << __FILE__ << ", " << __LINE__ << std::endl;
+	  //std::cout << __LINE__ << std::endl;
 
   outFile_p->cd();
-
 
   if(doLocalDebug || doGlobalDebug) std::cout << __FILE__ << ", " << __LINE__ << std::endl;
 
@@ -921,199 +935,198 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
 	centStr2 = "PbPb " + centStr2;
       }
 
-      for(Int_t binsI = 0; binsI < nSmallLargeBins; ++binsI){
-	for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
-	  const std::string jtAbsEtaStr = "AbsEta" + prettyString(jtAbsEtaBinsLow[aI], 1, true) + "to" + prettyString(jtAbsEtaBinsHi[aI], 1, true);
-	  const std::string jtAbsEtaStr2 = prettyString(jtAbsEtaBinsLow[aI], 1, true) + "<|#eta|<" + prettyString(jtAbsEtaBinsHi[aI], 1, true);
+      for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
+	const std::string jtAbsEtaStr = "AbsEta" + prettyString(jtAbsEtaBinsLow[aI], 1, true) + "to" + prettyString(jtAbsEtaBinsHi[aI], 1, true);
+	const std::string jtAbsEtaStr2 = prettyString(jtAbsEtaBinsLow[aI], 1, true) + "<|#eta|<" + prettyString(jtAbsEtaBinsHi[aI], 1, true);
+	
+	TCanvas* canv_p = new TCanvas("canv_p", "", 450, 450);
+	canv_p->SetTopMargin(0.01);
+	canv_p->SetRightMargin(0.002);
+	canv_p->SetLeftMargin(0.01);
+	canv_p->SetBottomMargin(0.01);
+	
+	TPad* pads[3];
+	canv_p->cd();
+	pads[0] = new TPad("pad0", "", 0.0, yPadFrac, 1.0, 1.0);
+	pads[0]->SetLeftMargin(marg);
+	pads[0]->SetTopMargin(0.01);
+	pads[0]->SetBottomMargin(0.001);
+	pads[0]->SetRightMargin(0.002);
+	pads[0]->Draw();
+	
+	canv_p->cd();
+	pads[1] = new TPad("pad1", "", 0.0, yPadFrac - (yPadFrac - marg)/2., 1.0, yPadFrac);
+	pads[1]->Draw();
+	pads[1]->SetLeftMargin(marg);
+	pads[1]->SetTopMargin(0.001);
+	pads[1]->SetBottomMargin(0.001);
+	pads[1]->SetRightMargin(0.002);
+	
+	canv_p->cd();
+	pads[2] = new TPad("pad2", "", 0.0, 0.0, 1.0, yPadFrac - (yPadFrac - marg)/2.);
+	pads[2]->Draw();
+	pads[2]->SetLeftMargin(marg);
+	pads[2]->SetTopMargin(0.001);
+	pads[2]->SetBottomMargin(marg/(yPadFrac - (yPadFrac - marg)/2.));
+	pads[2]->SetRightMargin(0.002);
+	
+	canv_p->cd();
+	pads[0]->cd();
+	
+	double max = -1;
+	double min = 10000000;
+	
+	double maxRat = -1;
+	double minRat = 10000000;
+	
+	for(Int_t idI = 0; idI < nID; ++idI){
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->SetMarkerColor(colors[idI]);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->SetLineColor(colors[idI]);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->SetMarkerStyle(styles[idI]);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->SetMarkerSize(1.);	  
 	  
-	  TCanvas* canv_p = new TCanvas("canv_p", "", 450, 450);
-	  canv_p->SetTopMargin(0.01);
-	  canv_p->SetRightMargin(0.002);
-	  canv_p->SetLeftMargin(0.01);
-	  canv_p->SetBottomMargin(0.01);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetXaxis()->SetTitleFont(43);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetXaxis()->SetTitleSize(14);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetYaxis()->SetTitleFont(43);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetYaxis()->SetTitleSize(14);
 	  
-	  TPad* pads[3];
-	  canv_p->cd();
-	  pads[0] = new TPad("pad0", "", 0.0, yPadFrac, 1.0, 1.0);
-	  pads[0]->SetLeftMargin(marg);
-	  pads[0]->SetTopMargin(0.01);
-	  pads[0]->SetBottomMargin(0.001);
-	  pads[0]->SetRightMargin(0.002);
-	  pads[0]->Draw();
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetXaxis()->SetLabelFont(43);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetXaxis()->SetLabelSize(14);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetYaxis()->SetLabelFont(43);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetYaxis()->SetLabelSize(14);
 	  
-	  canv_p->cd();
-	  pads[1] = new TPad("pad1", "", 0.0, yPadFrac - (yPadFrac - marg)/2., 1.0, yPadFrac);
-	  pads[1]->Draw();
-	  pads[1]->SetLeftMargin(marg);
-	  pads[1]->SetTopMargin(0.001);
-	  pads[1]->SetBottomMargin(0.001);
-	  pads[1]->SetRightMargin(0.002);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetXaxis()->SetNdivisions(505);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetYaxis()->SetNdivisions(505);
 	  
-	  canv_p->cd();
-	  pads[2] = new TPad("pad2", "", 0.0, 0.0, 1.0, yPadFrac - (yPadFrac - marg)/2.);
-	  pads[2]->Draw();
-	  pads[2]->SetLeftMargin(marg);
-	  pads[2]->SetTopMargin(0.001);
-	  pads[2]->SetBottomMargin(marg/(yPadFrac - (yPadFrac - marg)/2.));
-	  pads[2]->SetRightMargin(0.002);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetXaxis()->SetTitleOffset(5.0);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetYaxis()->SetTitleOffset(2.0);
 	  
-	  canv_p->cd();
-	  pads[0]->cd();
-	  
-	  double max = -1;
-	  double min = 10000000;
-	  
-	  double maxRat = -1;
-	  double minRat = 10000000;
-	  
-	  for(Int_t idI = 0; idI < nID; ++idI){
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->SetMarkerColor(colors[idI]);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->SetLineColor(colors[idI]);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->SetMarkerStyle(styles[idI]);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->SetMarkerSize(1.);	  
-	    
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetXaxis()->SetTitleFont(43);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetXaxis()->SetTitleSize(14);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetYaxis()->SetTitleFont(43);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetYaxis()->SetTitleSize(14);
-	    
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetXaxis()->SetLabelFont(43);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetXaxis()->SetLabelSize(14);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetYaxis()->SetLabelFont(43);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetYaxis()->SetLabelSize(14);
-	    
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetXaxis()->SetNdivisions(505);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetYaxis()->SetNdivisions(505);
-
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetXaxis()->SetTitleOffset(5.0);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetYaxis()->SetTitleOffset(2.0);
-	    
-	    for(Int_t bIX = 0; bIX < jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetNbinsX(); ++bIX){
-	      if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1) > max) max = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1);
-	      if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1) < min && jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1) > 0) min = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1);
+	  for(Int_t bIX = 0; bIX < jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetNbinsX(); ++bIX){
+	    if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1) > max) max = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1);
+	    if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1) < min && jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1) > 0) min = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1);
 	      
-	      if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetBinContent(bIX+1) > maxRat) maxRat = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetBinContent(bIX+1);
-	      if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetBinContent(bIX+1) < minRat) minRat = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetBinContent(bIX+1);
-	    }
+	    if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetBinContent(bIX+1) > maxRat) maxRat = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetBinContent(bIX+1);
+	    if(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetBinContent(bIX+1) < minRat) minRat = jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetBinContent(bIX+1)/jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetBinContent(bIX+1);
 	  }
-
-	  TLegend* leg_p = new TLegend(0.10, 0.1, 0.5, 0.5);
-	  leg_p->SetBorderSize(0.0);
-	  leg_p->SetFillStyle(0);
-	  leg_p->SetFillColor(0);
-	  leg_p->SetTextFont(43);
-	  leg_p->SetTextSize(14);
-
-	  for(Int_t idI = 0; idI < nID; ++idI){
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->SetMaximum(max*20.);
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->SetMinimum(min/20.);
-	    
-	    std::string id = idStr[idI] + ", N=" + std::to_string((int)(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->GetEntries()));
-	    leg_p->AddEntry(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI], id.c_str(), "P L");
-
-	    if(idI == 0) jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->DrawCopy("HIST E1 P");
-	    else jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->DrawCopy("HIST E1 P SAME");
-	  }
-	  
-	  TLatex* label_p = new TLatex();
-	  label_p->SetTextFont(43);
-	  label_p->SetTextSize(14);
-	  label_p->SetNDC();
-	  
-	  label_p->DrawLatex(0.5, 0.94, tempStr.c_str());
-	  label_p->DrawLatex(0.5, 0.88, centStr2.c_str());
-	  label_p->DrawLatex(0.5, 0.82, jtAbsEtaStr2.c_str());
-	  
-	  leg_p->Draw("SAME");
-	  
-	  bool doLogX = false;
-	  if(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetBinWidth(1)*3 < jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetBinWidth(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]->GetNbinsX()-1)) doLogX = true;
-	  
-	  gPad->SetLogy();
-	  if(doLogX) gPad->SetLogx();
-	  gStyle->SetOptStat(0);
-	  
-	  gPad->SetTicks(1, 2);
-	  gPad->RedrawAxis();
-	  
-	  canv_p->cd();
-	  pads[1]->cd();
-	  
-	  for(Int_t idI = 1; idI < nID; ++idI){
-	    TH1D* clone_p = (TH1D*)jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->Clone("temp");
-	    clone_p->Divide(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]);
-	    
-	    if(maxRat < 1.05) maxRat = 1.05;
-	    if(minRat > 0.95) minRat = 0.95;
-	    
-	    double interval = maxRat - minRat;
-	    maxRat += interval/5.;
-	    minRat -= interval/5.;
-	    
-	    clone_p->SetMaximum(maxRat);
-	    clone_p->SetMinimum(minRat);
-	    
-	    clone_p->GetYaxis()->SetTitle("Ratio");
-	    
-	    if(idI == 1) clone_p->DrawCopy("HIST E1 P");
-	    else clone_p->DrawCopy("HIST E1 P SAME");
-	    
-	    delete clone_p;
-	  }
-	  
-	  if(doLogX) gPad->SetLogx();
-	  gStyle->SetOptStat(0);
-	  
-	  gPad->SetTicks(1, 2);
-	  gPad->RedrawAxis();
-	  
-	  
-	  canv_p->cd();
-	  pads[2]->cd();
-	  
-	  for(Int_t idI = 1; idI < nID; ++idI){
-	    TH1D* clone_p = (TH1D*)jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->Clone("temp");
-	    clone_p->Divide(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI][binsI]);
-	    clone_p->SetMaximum(1.015);
-	    clone_p->SetMinimum(0.965);
-	    
-	    clone_p->GetYaxis()->SetTitle("Ratio (Zoom)");
-	    
-	    if(idI == 1) clone_p->DrawCopy("HIST E1 P");
-	    else clone_p->DrawCopy("HIST E1 P SAME");
-	    delete clone_p;
-	  }
-	  
-	  drawWhiteBox(900, 1100, .93, .9649);
-
-	  label_p->SetNDC(0);
-	  label_p->DrawLatex(100, .955, "100");
-	  label_p->DrawLatex(200, .955, "200");
-	  label_p->DrawLatex(400, .955, "400");
-	  label_p->DrawLatex(600, .955, "600");
-	  label_p->DrawLatex(1000, .955, "1000");
-	  label_p->DrawLatex(2000, .955, "2000");
-	  
-	  if(doLogX) gPad->SetLogx();
-	  gStyle->SetOptStat(0);
-	  
-	  gPad->SetTicks(1, 2);
-	  gPad->RedrawAxis();
-       
-	  std::string spectraName = "jtPtRaw_" + smallLargeBinsStr[binsI] + "_" + tempStr + "_" + centStr + "_" + jtAbsEtaStr + "_" + dateStr + ".pdf";
-	  spectraNames.push_back(spectraName);
-	  
-	  const std::string saveName = "pdfDir/" + dateStr + "/Process/" + spectraName;
-	  quietSaveAs(canv_p, saveName);
-	  
-	  delete pads[0];
-	  delete pads[1];
-	  delete pads[2];
-	  delete canv_p;
-	  delete leg_p;
-	  delete label_p;
 	}
+      
+	TLegend* leg_p = new TLegend(0.10, 0.1, 0.5, 0.5);
+	leg_p->SetBorderSize(0.0);
+	leg_p->SetFillStyle(0);
+	leg_p->SetFillColor(0);
+	leg_p->SetTextFont(43);
+	leg_p->SetTextSize(14);
+	
+	for(Int_t idI = 0; idI < nID; ++idI){
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->SetMaximum(max*20.);
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->SetMinimum(min/20.);
+	  
+	  std::string id = idStr[idI] + ", N=" + std::to_string((int)(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->GetEntries()));
+	  leg_p->AddEntry(jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI], id.c_str(), "P L");
+	  
+	  if(idI == 0) jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->DrawCopy("HIST E1 P");
+	  else jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->DrawCopy("HIST E1 P SAME");
+	}
+	
+	TLatex* label_p = new TLatex();
+	label_p->SetTextFont(43);
+	label_p->SetTextSize(14);
+	label_p->SetNDC();
+	
+	label_p->DrawLatex(0.5, 0.94, tempStr.c_str());
+	label_p->DrawLatex(0.5, 0.88, centStr2.c_str());
+	label_p->DrawLatex(0.5, 0.82, jtAbsEtaStr2.c_str());
+	
+	leg_p->Draw("SAME");
+	
+	bool doLogX = false;
+	if(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetBinWidth(1)*3 < jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetBinWidth(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]->GetNbinsX()-1)) doLogX = true;
+	
+	gPad->SetLogy();
+	if(doLogX) gPad->SetLogx();
+	gStyle->SetOptStat(0);
+	  
+	gPad->SetTicks(1, 2);
+	gPad->RedrawAxis();
+	
+	canv_p->cd();
+	pads[1]->cd();
+	
+	for(Int_t idI = 1; idI < nID; ++idI){
+	  TH1D* clone_p = (TH1D*)jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->Clone("temp");
+	  clone_p->Divide(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]);
+	  
+	  if(maxRat < 1.05) maxRat = 1.05;
+	  if(minRat > 0.95) minRat = 0.95;
+	  
+	  double interval = maxRat - minRat;
+	  maxRat += interval/5.;
+	  minRat -= interval/5.;
+	  
+	  clone_p->SetMaximum(maxRat);
+	  clone_p->SetMinimum(minRat);
+	  
+	  clone_p->GetYaxis()->SetTitle("Ratio");
+	  
+	  if(idI == 1) clone_p->DrawCopy("HIST E1 P");
+	  else clone_p->DrawCopy("HIST E1 P SAME");
+	  
+	  delete clone_p;
+	}
+	
+	if(doLogX) gPad->SetLogx();
+	gStyle->SetOptStat(0);
+	
+	gPad->SetTicks(1, 2);
+	gPad->RedrawAxis();
+	
+	
+	canv_p->cd();
+	pads[2]->cd();
+	
+	for(Int_t idI = 1; idI < nID; ++idI){
+	  TH1D* clone_p = (TH1D*)jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->Clone("temp");
+	  clone_p->Divide(jtPtRaw_RecoGenSymm_h[jI][cI][0][aI]);
+	  clone_p->SetMaximum(1.015);
+	  clone_p->SetMinimum(0.965);
+	  
+	  clone_p->GetYaxis()->SetTitle("Ratio (Zoom)");
+	  
+	  if(idI == 1) clone_p->DrawCopy("HIST E1 P");
+	  else clone_p->DrawCopy("HIST E1 P SAME");
+	  delete clone_p;
+	}
+	
+	drawWhiteBox(900, 1100, .93, .9649);
+	
+	label_p->SetNDC(0);
+	label_p->DrawLatex(100, .955, "100");
+	label_p->DrawLatex(200, .955, "200");
+	label_p->DrawLatex(400, .955, "400");
+	label_p->DrawLatex(600, .955, "600");
+	label_p->DrawLatex(1000, .955, "1000");
+	label_p->DrawLatex(2000, .955, "2000");
+	
+	if(doLogX) gPad->SetLogx();
+	gStyle->SetOptStat(0);
+	
+	gPad->SetTicks(1, 2);
+	gPad->RedrawAxis();
+	
+	std::string spectraName = "jtPtRaw_" + tempStr + "_" + centStr + "_" + jtAbsEtaStr + "_" + dateStr + ".pdf";
+	spectraNames.push_back(spectraName);
+	
+	const std::string saveName = "pdfDir/" + dateStr + "/Process/" + spectraName;
+	quietSaveAs(canv_p, saveName);
+	
+	delete pads[0];
+	delete pads[1];
+	delete pads[2];
+	delete canv_p;
+	delete leg_p;
+	delete label_p;
       }
+      
     
       for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
 	const std::string jtAbsEtaStr = "AbsEta" + prettyString(jtAbsEtaBinsLow[aI], 1, true) + "to" + prettyString(jtAbsEtaBinsHi[aI], 1, true);
@@ -1435,16 +1448,35 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
       for(Int_t idI = 0; idI < nID; ++idI){
 	for(Int_t aI = 0; aI < nJtAbsEtaBins; ++aI){
 
-	  for(Int_t binsI = 0; binsI < nSmallLargeBins; ++binsI){
-	    jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI]->Write("", TObject::kOverwrite);
-	    delete jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI][binsI];
-	  }
+	  jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI]->Write("", TObject::kOverwrite);
+	  delete jtPtRaw_RecoGenSymm_h[jI][cI][idI][aI];
 	  
 	  jtPtRaw_RecoGenAsymm_h[jI][cI][idI][aI]->Write("", TObject::kOverwrite);
 	  delete jtPtRaw_RecoGenAsymm_h[jI][cI][idI][aI];
 
 	  jtPtRaw_General_h[jI][cI][idI][aI]->Write("", TObject::kOverwrite);
 	  delete jtPtRaw_General_h[jI][cI][idI][aI];
+
+	  for(Int_t jI2 = 0; jI2 < nDataJet2; ++jI2){
+	    std::cout << "HIST PRINT: " << jI << "/" << nDataJet << ", " << jI2 << "/" << nDataJet << std::endl;
+	   
+	    if(mainTreePos == jI2) continue;
+	    std::cout << jtPtCorrR_General_h[jI][jI2][cI][idI][aI]->GetName() << std::endl;
+	    std::cout << "PASSED PRINT POINT" << std::endl;
+
+	    //	    jtPtCorrR_General_h[jI][jI2][cI][idI][aI]->Print("ALL");
+	    jtPtCorrR_General_h[jI][jI2][cI][idI][aI]->Write("", TObject::kOverwrite);
+	    delete jtPtCorrR_General_h[jI][jI2][cI][idI][aI];
+	    
+	    jtPtCorrR_Xaxis_General_h[jI][jI2][cI][idI][aI]->Write("", TObject::kOverwrite);
+	    delete jtPtCorrR_Xaxis_General_h[jI][jI2][cI][idI][aI];
+
+	    jtPtCorrR_XaxisMiss_General_h[jI][jI2][cI][idI][aI]->Write("", TObject::kOverwrite);
+	    delete jtPtCorrR_XaxisMiss_General_h[jI][jI2][cI][idI][aI];
+
+	    jtPtCorrR_Yaxis_General_h[jI][jI2][cI][idI][aI]->Write("", TObject::kOverwrite);
+	    delete jtPtCorrR_Yaxis_General_h[jI][jI2][cI][idI][aI];
+	  }
 
 	  for(Int_t jIter = 0; jIter < nRecoJtPtBins[jI][cI]; ++jIter){
 	    multijetAJ_All_h[jI][cI][idI][aI][jIter]->Write("", TObject::kOverwrite);
@@ -1480,45 +1512,21 @@ int processRawData(const std::string inDataFileName, const std::string inRespons
   cutPropOut.SetMinJtPtCut(nDataJet, minJtPtCut);
   cutPropOut.SetMultiJtPtCut(nDataJet, multiJtPtCut);
   cutPropOut.SetRecoTruncPos(nDataJet, recoTruncPos);
-  cutPropOut.SetNSmallR(cutProp.GetNSmallR());
-  cutPropOut.SetSmallRVals(cutProp.GetSmallRVals());
-  cutPropOut.SetNLargeR(cutProp.GetNLargeR());
-  cutPropOut.SetLargeRVals(cutProp.GetLargeRVals());
+  cutPropOut.SetNR(cutProp.GetNR());
+  cutPropOut.SetRVals(cutProp.GetRVals());
 
-  cutPropOut.SetNRecoJtPtBinsSmallRCent0to10(nRecoJtPtBinsSmallRCent0to10Temp);
-  cutPropOut.SetNRecoJtPtBinsLargeRCent0to10(nRecoJtPtBinsLargeRCent0to10Temp);
-  cutPropOut.SetNGenJtPtSmallBinsSmallRCent0to10(cutProp.GetNGenJtPtSmallBinsSmallRCent0to10());
-  cutPropOut.SetNGenJtPtLargeBinsSmallRCent0to10(cutProp.GetNGenJtPtLargeBinsSmallRCent0to10());
-  cutPropOut.SetNGenJtPtSmallBinsLargeRCent0to10(cutProp.GetNGenJtPtSmallBinsLargeRCent0to10());
-  cutPropOut.SetNGenJtPtLargeBinsLargeRCent0to10(cutProp.GetNGenJtPtLargeBinsLargeRCent0to10());
+  for(Int_t jI = 0; jI < nDataJet; ++jI){
+    for(Int_t cI = 0; cI < nCentBins; ++cI){
+      std::string centStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);
 
-  cutPropOut.SetNRecoJtPtBinsSmallRCent10to30(nRecoJtPtBinsSmallRCent10to30Temp);
-  cutPropOut.SetNRecoJtPtBinsLargeRCent10to30(nRecoJtPtBinsLargeRCent10to30Temp);
-  cutPropOut.SetNGenJtPtSmallBinsSmallRCent10to30(cutProp.GetNGenJtPtSmallBinsSmallRCent10to30());
-  cutPropOut.SetNGenJtPtLargeBinsSmallRCent10to30(cutProp.GetNGenJtPtLargeBinsSmallRCent10to30());
-  cutPropOut.SetNGenJtPtSmallBinsLargeRCent10to30(cutProp.GetNGenJtPtSmallBinsLargeRCent10to30());
-  cutPropOut.SetNGenJtPtLargeBinsLargeRCent10to30(cutProp.GetNGenJtPtLargeBinsLargeRCent10to30());
+      cutPropOut.SetGenPtBins(rValI[jI], centStr, nGenJtPtBins[jI][cI], genJtPtBins[jI][cI]);
+      cutPropOut.SetRecoPtBins(rValI[jI], centStr, nRecoJtPtBins[jI][cI], recoJtPtBins[jI][cI]);
+    }
+  }
 
-  cutPropOut.SetNRecoJtPtBinsSmallRCent30to50(nRecoJtPtBinsSmallRCent30to50Temp);
-  cutPropOut.SetNRecoJtPtBinsLargeRCent30to50(nRecoJtPtBinsLargeRCent30to50Temp);
-  cutPropOut.SetNGenJtPtSmallBinsSmallRCent30to50(cutProp.GetNGenJtPtSmallBinsSmallRCent30to50());
-  cutPropOut.SetNGenJtPtLargeBinsSmallRCent30to50(cutProp.GetNGenJtPtLargeBinsSmallRCent30to50());
-  cutPropOut.SetNGenJtPtSmallBinsLargeRCent30to50(cutProp.GetNGenJtPtSmallBinsLargeRCent30to50());
-  cutPropOut.SetNGenJtPtLargeBinsLargeRCent30to50(cutProp.GetNGenJtPtLargeBinsLargeRCent30to50());
+  cutPropOut.SetNGeneralBins(cutProp.GetNGeneralBins());
+  cutPropOut.SetGeneralBins(cutProp.GetGeneralBins());
 
-  cutPropOut.SetNRecoJtPtBinsSmallRCent50to90(nRecoJtPtBinsSmallRCent50to90Temp);
-  cutPropOut.SetNRecoJtPtBinsLargeRCent50to90(nRecoJtPtBinsLargeRCent50to90Temp);
-  cutPropOut.SetNGenJtPtSmallBinsSmallRCent50to90(cutProp.GetNGenJtPtSmallBinsSmallRCent50to90());
-  cutPropOut.SetNGenJtPtLargeBinsSmallRCent50to90(cutProp.GetNGenJtPtLargeBinsSmallRCent50to90());
-  cutPropOut.SetNGenJtPtSmallBinsLargeRCent50to90(cutProp.GetNGenJtPtSmallBinsLargeRCent50to90());
-  cutPropOut.SetNGenJtPtLargeBinsLargeRCent50to90(cutProp.GetNGenJtPtLargeBinsLargeRCent50to90());
-
-  cutPropOut.SetRecoJtPtBinsSmallR(recoJtPtBinsSmallRTemp);
-  cutPropOut.SetRecoJtPtBinsLargeR(recoJtPtBinsLargeRTemp);
-  cutPropOut.SetGenJtPtSmallBinsSmallR(cutProp.GetGenJtPtSmallBinsSmallR());
-  cutPropOut.SetGenJtPtLargeBinsSmallR(cutProp.GetGenJtPtLargeBinsSmallR());
-  cutPropOut.SetGenJtPtSmallBinsLargeR(cutProp.GetGenJtPtSmallBinsLargeR());
-  cutPropOut.SetGenJtPtLargeBinsLargeR(cutProp.GetGenJtPtLargeBinsLargeR());
   cutPropOut.SetNJtAbsEtaBins(nJtAbsEtaBins);
   cutPropOut.SetJtAbsEtaBinsLow(nJtAbsEtaBins, jtAbsEtaBinsLow);
   cutPropOut.SetJtAbsEtaBinsHi(nJtAbsEtaBins, jtAbsEtaBinsHi);

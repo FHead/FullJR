@@ -2,16 +2,16 @@
 #define SYSTFUNCTIONS_H
 
 //cpp dependencies
-#include <vector>
 #include <string>
+#include <vector>
 
 //ROOT dependencies
-#include "TH1D.h"
-#include "TDatime.h"
-#include "TCanvas.h"
-#include "TLegend.h"
-#include "TLatex.h"
 #include "TBox.h"
+#include "TCanvas.h"
+#include "TDatime.h"
+#include "TH1D.h"
+#include "TLatex.h"
+#include "TLegend.h"
 #include "TPad.h"
 #include "TStyle.h"
 
@@ -384,12 +384,49 @@ std::vector<double> getSyst(const std::string dirStr, TH1D* nominal_p, std::vect
   return systVect;
 }
 
-void drawSyst(TCanvas* canv_p, TH1D* nominal_p, std::vector<double> syst_, Double_t minXVal, Double_t maxXVal)
+
+void smoothErrors(TH1D* syst_p, TH1D* nom_p)
+{
+  const Int_t nBinsMax = 100;
+  Double_t bins[nBinsMax];
+  Int_t nBins = syst_p->GetNbinsX();
+
+  for(Int_t bI = 0; bI < nBins+1; ++bI){
+    bins[bI] = syst_p->GetBinLowEdge(bI+1);
+  }
+
+  TH1D* temp_p = new TH1D("temp_h", "", nBins, bins);
+
+  for(Int_t bI = 0; bI < nBins; ++bI){
+    temp_p->SetBinContent(bI+1, TMath::Abs(syst_p->GetBinContent(bI+1) - nom_p->GetBinContent(bI+1))/nom_p->GetBinContent(bI+1));
+    temp_p->SetBinError(bI+1, 0);
+  }
+
+  temp_p->Smooth();
+
+  for(Int_t bI = 0; bI < nBins;++bI){
+    Double_t newVal = temp_p->GetBinContent(bI+1)*nom_p->GetBinContent(bI+1);
+    if(nom_p->GetBinContent(bI+1) < syst_p->GetBinContent(bI+1)) newVal = nom_p->GetBinContent(bI+1) + newVal;
+    else newVal = nom_p->GetBinContent(bI+1) - newVal;
+
+    syst_p->SetBinContent(bI+1, newVal);
+  }
+
+  delete temp_p;
+  
+  return;
+}
+
+
+void drawSyst(TCanvas* canv_p, TPad* pad_p, TH1D* nominal_p, std::vector<double>* syst_, Double_t minXVal, Double_t maxXVal, bool skipZeros = false)
 {
   canv_p->cd();
+  if(pad_p != NULL) pad_p->cd();
 
   TBox* tempBox_p = new TBox();
   tempBox_p->SetFillColorAlpha(nominal_p->GetMarkerColor(), .25);
+
+  std::string nominalName = nominal_p->GetName();
 
   Int_t binFillPos = 0;
   for(Int_t bIX = 0; bIX < nominal_p->GetNbinsX(); ++bIX){
@@ -398,10 +435,21 @@ void drawSyst(TCanvas* canv_p, TH1D* nominal_p, std::vector<double> syst_, Doubl
     Double_t binHiEdge = nominal_p->GetBinLowEdge(bIX+2);
     Double_t binContent = nominal_p->GetBinContent(bIX+1);
 
+    if(nominalName.find("rraa") != std::string::npos){
+      binLowEdge += 0.035;
+      binHiEdge -= 0.035;
+    }
+
     if(binCenter < minXVal) continue;
     if(binCenter > maxXVal) continue;
 
-    tempBox_p->DrawBox(binLowEdge, binContent - syst_.at(binFillPos), binHiEdge, binContent + syst_.at(binFillPos));
+    if(skipZeros && nominal_p->GetBinContent(bIX+1) <= 0.000001){
+      ++binFillPos;
+      continue;
+    }
+
+    tempBox_p->DrawBox(binLowEdge, binContent - syst_->at(binFillPos), binHiEdge, binContent + syst_->at(binFillPos));
+
     ++binFillPos;
   }
 
@@ -424,11 +472,15 @@ void drawLumiOrTAA(TCanvas* canv_p, TH1D* hist_p, Double_t min, Double_t max, st
   TBox* tempBox_p = new TBox();
   if(lumiOrTAA.find("Lumi") != std::string::npos){
     tempBox_p->SetFillColorAlpha(kPalette.getColor(getColorPosFromCent("", true)), .25);
+
+    std::cout << "LUMIORTAA: " << bins[6] << "-" << bins[24] << ", " << min << ", " << max << std::endl;
     tempBox_p->DrawBox(bins[6], 1 - syst[0], bins[24], 1 + syst[0]);
   }
   else if(lumiOrTAA.find("TAA") != std::string::npos){
     tempBox_p->SetFillColorAlpha(hist_p->GetMarkerColor(), .25);
     tempBox_p->DrawBox(bins[26 + pos*20], 1 - syst[0], bins[44 + pos*20], 1 + syst[0]);
+    std::cout << "LUMIORTAA: " << bins[26 + pos*20] << "-" << bins[44 + pos*20] << ", " << min << ", " << max << std::endl;
+    std::cout << " LUMIORTAA: " << 26 + pos*20 << "-" << 44 + pos*20  << std::endl;
   }
 
   delete tempBox_p;

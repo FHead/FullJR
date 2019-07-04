@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 //ROOT dependencies
+#include "TDirectoryFile.h"
 #include "TFile.h"
 #include "TH1D.h"
 #include "TKey.h"
@@ -23,6 +24,7 @@ int compareAllHist(const std::string inFileName1, const std::string inFileName2,
   
   const Int_t nFiles = 2;
   TFile* inFile_p[nFiles];
+  std::vector<TDirectoryFile*> dirs_p;
   const std::string fileNames[nFiles] = {inFileName1, inFileName2};
   std::map<std::string, ULong64_t> histNamesToCounts;
   std::map<std::string, TH1D*> histNamesToFile1Contents;
@@ -44,14 +46,36 @@ int compareAllHist(const std::string inFileName1, const std::string inFileName2,
     while((key = (TKey*)next())){
       const std::string name = key->GetName();
       const std::string className = key->GetClassName();
-      if(className.find("TH1D") == std::string::npos) continue;
+      if(className.find("TH1D") == std::string::npos && className.find("TDirectory") == std::string::npos) continue;
 
-      ++(histNamesToCounts[name]);
-      if(tI == 0) histNamesToFile1Contents[name] = (TH1D*)inFile_p[tI]->Get(name.c_str());
+
+      if(className.find("TH1D") != std::string::npos){
+	++(histNamesToCounts[name]);
+	if(tI == 0) histNamesToFile1Contents[name] = (TH1D*)inFile_p[tI]->Get(name.c_str());
+	else{
+	  std::string name2 = name;
+	  if(stringToRemoveFile2.size() != 0) name2.replace(name2.find(stringToRemoveFile2), stringToRemoveFile2.size(), "");
+	  histNamesToFile2Contents[name2] = (TH1D*)inFile_p[tI]->Get(name.c_str());	
+	}
+      }
       else{
-	std::string name2 = name;
-	if(stringToRemoveFile2.size() != 0) name2.replace(name2.find(stringToRemoveFile2), stringToRemoveFile2.size(), "");
-	histNamesToFile2Contents[name2] = (TH1D*)inFile_p[tI]->Get(name.c_str());	
+	dirs_p.push_back((TDirectoryFile*)inFile_p[tI]->Get(name.c_str()));
+	TIter next3(dirs_p[dirs_p.size()-1]->GetListOfKeys());
+	TKey* key3 = NULL;
+
+	while((key3 = (TKey*)next3())){     
+	  const std::string name3 = key3->GetName();
+	  const std::string className3 = key3->GetClassName();
+	  if(className3.find("TH1D") == std::string::npos) continue;	  
+
+	  ++(histNamesToCounts[name3]);
+	  if(tI == 0) histNamesToFile1Contents[name3] = (TH1D*)dirs_p[dirs_p.size()-1]->Get(name3.c_str());
+	  else{
+	    std::string name4 = name3;
+	    if(stringToRemoveFile2.size() != 0) name4.replace(name4.find(stringToRemoveFile2), stringToRemoveFile2.size(), "");
+	    histNamesToFile2Contents[name4] = (TH1D*)dirs_p[dirs_p.size()-1]->Get(name3.c_str());
+	  }
+	}
       }
     }
 
@@ -177,9 +201,7 @@ int compareAllHist(const std::string inFileName1, const std::string inFileName2,
       }
       std::cout << generalBins2[nBins1-1] << "." << std::endl;;
       continue;
-    }
-
-    
+    }    
   }
   
   for(Int_t tI = 0; tI < nFiles; ++tI){

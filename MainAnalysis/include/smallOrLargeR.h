@@ -9,362 +9,281 @@ class smallOrLargeR
  public:
   const double deltaBin = 0.1;
   //Chosen loose since bins will be effective integer but double because of TH1 initialization
+  static const int nR = 6;
+  std::vector<int> rVals = {2, 3, 4, 6, 8, 10};
+   
+  std::vector<double> genPtBinsR2Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR2Cent0to10 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR2Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR2Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR2Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR2Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR2Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR2Cent50to90 = {200, 300, 400, 500};
 
-  static const int nSmallR = 6;
-  std::vector<int> smallRVals = {1, 2, 3, 4, 5, 6};
-  
-  static const int nLargeR = 4;
-  std::vector<int> largeRVals = {7, 8, 9, 10};
+  std::vector<double> genPtBinsR3Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR3Cent0to10 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR3Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR3Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR3Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR3Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR3Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR3Cent50to90 = {200, 300, 400, 500};
 
-  static const int nRecoJtPtBinsSmallRCent0to10 = 6;
-  static const int nRecoJtPtBinsSmallRCent10to30 = 5;
-  static const int nRecoJtPtBinsSmallRCent30to50 = 4;
-  static const int nRecoJtPtBinsSmallRCent50to90 = 4;
-  std::vector<double> recoJtPtBinsSmallR = {140., 200., 270, 350., 430, 600, 1000};
+  std::vector<double> genPtBinsR4Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR4Cent0to10 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR4Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR4Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR4Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR4Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR4Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR4Cent50to90 = {200, 300, 400, 500};
 
-  static const int nGenJtPtSmallBinsSmallRCent0to10 = 13;
-  static const int nGenJtPtSmallBinsSmallRCent10to30 = 12;
-  static const int nGenJtPtSmallBinsSmallRCent30to50 = 11;
-  static const int nGenJtPtSmallBinsSmallRCent50to90 = 11;
-  std::vector<double> genJtPtSmallBinsSmallR = {100, 140., 165., 200., 235., 270, 310., 350., 390., 430, 500., 600, 1000, 1500};
-  
-  static const int nGenJtPtLargeBinsSmallRCent0to10 = 8;
-  static const int nGenJtPtLargeBinsSmallRCent10to30 = 7;
-  static const int nGenJtPtLargeBinsSmallRCent30to50 = 6;
-  static const int nGenJtPtLargeBinsSmallRCent50to90 = 6;
-  std::vector<double> genJtPtLargeBinsSmallR = {100, 140., 200., 270, 350., 430, 600, 1000, 1500};
+  std::vector<double> genPtBinsR6Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR6Cent0to10 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR6Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR6Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR6Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR6Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR6Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR6Cent50to90 = {200, 300, 400, 500};
 
-  static const int nRecoJtPtBinsLargeRCent0to10 = 4;
-  static const int nRecoJtPtBinsLargeRCent10to30 = 3;
-  static const int nRecoJtPtBinsLargeRCent30to50 = 2;
-  static const int nRecoJtPtBinsLargeRCent50to90 = 2;
-  std::vector<double> recoJtPtBinsLargeR = {200, 270, 430, 600, 1000};
+  std::vector<double> genPtBinsR8Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR8Cent0to10 = {300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR8Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR8Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR8Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR8Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR8Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR8Cent50to90 = {200, 300, 400, 500};
 
-  static const int nGenJtPtSmallBinsLargeRCent0to10 = 12;
-  static const int nGenJtPtSmallBinsLargeRCent10to30 = 11;
-  static const int nGenJtPtSmallBinsLargeRCent30to50 = 9;
-  static const int nGenJtPtSmallBinsLargeRCent50to90 = 9;
-  std::vector<double> genJtPtSmallBinsLargeR = {140., 165., 200., 235., 270, 310., 350., 390., 430, 500., 600, 1000, 1500};
-
-  static const int nGenJtPtLargeBinsLargeRCent0to10 = 7;
-  static const int nGenJtPtLargeBinsLargeRCent10to30 = 6;
-  static const int nGenJtPtLargeBinsLargeRCent30to50 = 5;
-  static const int nGenJtPtLargeBinsLargeRCent50to90 = 5;
-  std::vector<double> genJtPtLargeBinsLargeR = {140., 200., 270, 350., 430, 600, 1000, 1500};
-
-
-
-  /*
-  static const int nRecoJtPtBinsSmallRCent0to10 = 11;
-  static const int nRecoJtPtBinsSmallRCent10to30 = 10;
-  static const int nRecoJtPtBinsSmallRCent30to50 = 9;
-  static const int nRecoJtPtBinsSmallRCent50to90 = 9;
-  std::vector<double> recoJtPtBinsSmallR = {140., 165., 200., 235., 270, 310., 350., 390., 430, 500., 600, 1000};
-
-  static const int nGenJtPtSmallBinsSmallRCent0to10 = 13;
-  static const int nGenJtPtSmallBinsSmallRCent10to30 = 12;
-  static const int nGenJtPtSmallBinsSmallRCent30to50 = 11;
-  static const int nGenJtPtSmallBinsSmallRCent50to90 = 11;
-  std::vector<double> genJtPtSmallBinsSmallR = {100, 140., 165., 200., 235., 270, 310., 350., 390., 430, 500., 600, 1000, 1500};
-  
-  static const int nGenJtPtLargeBinsSmallRCent0to10 = 8;
-  static const int nGenJtPtLargeBinsSmallRCent10to30 = 7;
-  static const int nGenJtPtLargeBinsSmallRCent30to50 = 6;
-  static const int nGenJtPtLargeBinsSmallRCent50to90 = 6;
-  std::vector<double> genJtPtLargeBinsSmallR = {100, 140., 200., 270, 350., 430, 600, 1000, 1500};
-
-  static const int nRecoJtPtBinsLargeRCent0to10 = 8;
-  static const int nRecoJtPtBinsLargeRCent10to30 = 7;
-  static const int nRecoJtPtBinsLargeRCent30to50 = 6;
-  static const int nRecoJtPtBinsLargeRCent50to90 = 6;
-  std::vector<double> recoJtPtBinsLargeR = {235., 270, 310., 350., 390., 430, 500., 600, 1000};
-
-  static const int nGenJtPtSmallBinsLargeRCent0to10 = 10;
-  static const int nGenJtPtSmallBinsLargeRCent10to30 = 9;
-  static const int nGenJtPtSmallBinsLargeRCent30to50 = 8;
-  static const int nGenJtPtSmallBinsLargeRCent50to90 = 8;
-  std::vector<double> genJtPtSmallBinsLargeR = {200., 235., 270, 310., 350., 390., 430, 500., 600, 1000, 1500};
-
-  static const int nGenJtPtLargeBinsLargeRCent0to10 = 6;
-  static const int nGenJtPtLargeBinsLargeRCent10to30 = 5;
-  static const int nGenJtPtLargeBinsLargeRCent30to50 = 4;
-  static const int nGenJtPtLargeBinsLargeRCent50to90 = 4;
-  std::vector<double> genJtPtLargeBinsLargeR = {200., 270, 350., 430, 600, 1000, 1500};
-  
-
-  static const int nRecoJtPtBinsSmallRCent0to10 = 8;
-  static const int nRecoJtPtBinsSmallRCent10to30 = 7;
-  static const int nRecoJtPtBinsSmallRCent30to50 = 6;
-  static const int nRecoJtPtBinsSmallRCent50to90 = 6;
-  std::vector<double> recoJtPtBinsSmallR = {165., 200., 255, 310., 370, 435, 500, 600, 1000};
-
-  static const int nGenJtPtSmallBinsSmallRCent0to10 = 11;
-  static const int nGenJtPtSmallBinsSmallRCent10to30 = 10;
-  static const int nGenJtPtSmallBinsSmallRCent30to50 = 9;
-  static const int nGenJtPtSmallBinsSmallRCent50to90 = 9;
-  std::vector<double> genJtPtSmallBinsSmallR = {100, 130, 165., 200., 255, 310., 370, 435, 500, 600, 1000, 1500};
-  
-  static const int nGenJtPtLargeBinsSmallRCent0to10 = 7;
-  static const int nGenJtPtLargeBinsSmallRCent10to30 = 6;
-  static const int nGenJtPtLargeBinsSmallRCent30to50 = 5;
-  static const int nGenJtPtLargeBinsSmallRCent50to90 = 5;
-  std::vector<double> genJtPtLargeBinsSmallR = {100, 165., 200., 310., 435, 600, 1000, 1500};
-
-  static const int nRecoJtPtBinsLargeRCent0to10 = 6;
-  static const int nRecoJtPtBinsLargeRCent10to30 = 5;
-  static const int nRecoJtPtBinsLargeRCent30to50 = 4;
-  static const int nRecoJtPtBinsLargeRCent50to90 = 4;
-  std::vector<double> recoJtPtBinsLargeR = {255, 310., 370, 435, 500, 600, 1000};
-
-  static const int nGenJtPtSmallBinsLargeRCent0to10 = 8;
-  static const int nGenJtPtSmallBinsLargeRCent10to30 = 7;
-  static const int nGenJtPtSmallBinsLargeRCent30to50 = 6;
-  static const int nGenJtPtSmallBinsLargeRCent50to90 = 6;
-  std::vector<double> genJtPtSmallBinsLargeR = {200., 255, 310., 370, 435, 500, 600, 1000, 1500};
-
-  static const int nGenJtPtLargeBinsLargeRCent0to10 = 5;
-  static const int nGenJtPtLargeBinsLargeRCent10to30 = 4;
-  static const int nGenJtPtLargeBinsLargeRCent30to50 = 3;
-  static const int nGenJtPtLargeBinsLargeRCent50to90 = 3;
-  std::vector<double> genJtPtLargeBinsLargeR = {200., 310., 435, 600, 1000, 1500};
+  std::vector<double> genPtBinsR10Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR10Cent0to10 = {300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR10Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR10Cent10to30 = {300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR10Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR10Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR10Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR10Cent50to90 = {200, 300, 400, 500};
 
 
-  static const int nRecoJtPtBinsSmallRCent0to10 = 13;
-  static const int nRecoJtPtBinsSmallRCent10to30 = 12;
-  static const int nRecoJtPtBinsSmallRCent30to50 = 11;
-  static const int nRecoJtPtBinsSmallRCent50to90 = 11;
-  std::vector<double> recoJtPtBinsSmallR = {150., 175., 200., 225, 250., 275, 300., 350., 400., 450., 500., 600., 800., 1000.};
-
-  static const int nGenJtPtSmallBinsSmallRCent0to10 = 15;
-  static const int nGenJtPtSmallBinsSmallRCent10to30 = 14;
-  static const int nGenJtPtSmallBinsSmallRCent30to50 = 13;
-  static const int nGenJtPtSmallBinsSmallRCent50to90 = 13;
-  std::vector<double> genJtPtSmallBinsSmallR = {100., 150., 175., 200., 225., 250., 275., 300., 350., 400., 450., 500., 600., 800., 1000., 1500.};
-  
-  static const int nGenJtPtLargeBinsSmallRCent0to10 = 6;
-  static const int nGenJtPtLargeBinsSmallRCent10to30 = 5;
-  static const int nGenJtPtLargeBinsSmallRCent30to50 = 4;
-  static const int nGenJtPtLargeBinsSmallRCent50to90 = 4;
-  std::vector<double> genJtPtLargeBinsSmallR = {100., 200., 300., 400, 600., 1000., 1500.}
-;plo
-  static const int nRecoJtPtBinsLargeRCent0to10 = 7;
-  static const int nRecoJtPtBinsLargeRCent10to30 = 6;
-  static const int nRecoJtPtBinsLargeRCent30to50 = 5;
-  static const int nRecoJtPtBinsLargeRCent50to90 = 5;
-  std::vector<double> recoJtPtBinsLargeR = {250., 300., 350., 400., 500., 600., 800, 1000.};
-
-  static const int nGenJtPtSmallBinsLargeRCent0to10 = 9;
-  static const int nGenJtPtSmallBinsLargeRCent10to30 = 8;
-  static const int nGenJtPtSmallBinsLargeRCent30to50 = 7;
-  static const int nGenJtPtSmallBinsLargeRCent50to90 = 7;
-  std::vector<double> genJtPtSmallBinsLargeR = {200., 250., 300., 350., 400., 500., 600., 800., 1000., 1500.};
-
-  static const int nGenJtPtLargeBinsLargeRCent0to10 = 4;
-  static const int nGenJtPtLargeBinsLargeRCent10to30 = 3;
-  static const int nGenJtPtLargeBinsLargeRCent30to50 = 2;
-  static const int nGenJtPtLargeBinsLargeRCent50to90 = 2;
-  std::vector<double> genJtPtLargeBinsLargeR = {200., 300., 600., 1000., 1500.};
-  */
-
-  static const int generalBinsSmallRLow = 100;
-  static const int generalBinsSmallRHigh = 1500;
-  static const int generalBinsLargeRLow = 140;
-  static const int generalBinsLargeRHigh = 1500;
+  static const int generalBinsLow = 20;
+  static const int generalBinsHigh = 1500;
   static const int generalBinsInterval = 10;
 
-  static const int nGeneralBinsSmallR = (generalBinsSmallRHigh - generalBinsSmallRLow)/generalBinsInterval;
-  static const int nGeneralBinsLargeR = (generalBinsLargeRHigh - generalBinsLargeRLow)/generalBinsInterval;
-
-  std::vector<double> generalBinsSmallR, generalBinsLargeR;
+  static const int nGeneralBins = (generalBinsHigh - generalBinsLow)/generalBinsInterval;
+  std::vector<double> generalBins;
 
   smallOrLargeR();
 
-  int GetNSmallR(){return nSmallR;}
-  int GetNLargeR(){return nLargeR;}
+  int GetNR(){return nR;}
+  std::vector<int> GetRVals(){return rVals;}
 
-  std::vector<int> GetSmallRVals(){return smallRVals;}
-  std::vector<int> GetLargeRVals(){return largeRVals;}
+  std::vector<double> GetGenPtBinsR2Cent0to10(){return genPtBinsR2Cent0to10;}
+  std::vector<double> GetRecoPtBinsR2Cent0to10(){return recoPtBinsR2Cent0to10;}
+  std::vector<double> GetGenPtBinsR2Cent10to30(){return genPtBinsR2Cent10to30;}
+  std::vector<double> GetRecoPtBinsR2Cent10to30(){return recoPtBinsR2Cent10to30;}
+  std::vector<double> GetGenPtBinsR2Cent30to50(){return genPtBinsR2Cent30to50;}
+  std::vector<double> GetRecoPtBinsR2Cent30to50(){return recoPtBinsR2Cent30to50;}
+  std::vector<double> GetGenPtBinsR2Cent50to90(){return genPtBinsR2Cent50to90;}
+  std::vector<double> GetRecoPtBinsR2Cent50to90(){return recoPtBinsR2Cent50to90;}
 
-  int GetNRecoJtPtBinsSmallRCent0to10(){return nRecoJtPtBinsSmallRCent0to10;}
-  int GetNRecoJtPtBinsLargeRCent0to10(){return nRecoJtPtBinsLargeRCent0to10;}
-  int GetNGenJtPtSmallBinsSmallRCent0to10(){return nGenJtPtSmallBinsSmallRCent0to10;}
-  int GetNGenJtPtSmallBinsLargeRCent0to10(){return nGenJtPtSmallBinsLargeRCent0to10;}
-  int GetNGenJtPtLargeBinsSmallRCent0to10(){return nGenJtPtLargeBinsSmallRCent0to10;}
-  int GetNGenJtPtLargeBinsLargeRCent0to10(){return nGenJtPtLargeBinsLargeRCent0to10;}
+  std::vector<double> GetGenPtBinsR3Cent0to10(){return genPtBinsR3Cent0to10;}
+  std::vector<double> GetRecoPtBinsR3Cent0to10(){return recoPtBinsR3Cent0to10;}
+  std::vector<double> GetGenPtBinsR3Cent10to30(){return genPtBinsR3Cent10to30;}
+  std::vector<double> GetRecoPtBinsR3Cent10to30(){return recoPtBinsR3Cent10to30;}
+  std::vector<double> GetGenPtBinsR3Cent30to50(){return genPtBinsR3Cent30to50;}
+  std::vector<double> GetRecoPtBinsR3Cent30to50(){return recoPtBinsR3Cent30to50;}
+  std::vector<double> GetGenPtBinsR3Cent50to90(){return genPtBinsR3Cent50to90;}
+  std::vector<double> GetRecoPtBinsR3Cent50to90(){return recoPtBinsR3Cent50to90;}
 
-  int GetNRecoJtPtBinsSmallRCent10to30(){return nRecoJtPtBinsSmallRCent10to30;}
-  int GetNRecoJtPtBinsLargeRCent10to30(){return nRecoJtPtBinsLargeRCent10to30;}
-  int GetNGenJtPtSmallBinsSmallRCent10to30(){return nGenJtPtSmallBinsSmallRCent10to30;}
-  int GetNGenJtPtSmallBinsLargeRCent10to30(){return nGenJtPtSmallBinsLargeRCent10to30;}
-  int GetNGenJtPtLargeBinsSmallRCent10to30(){return nGenJtPtLargeBinsSmallRCent10to30;}
-  int GetNGenJtPtLargeBinsLargeRCent10to30(){return nGenJtPtLargeBinsLargeRCent10to30;}
+  std::vector<double> GetGenPtBinsR4Cent0to10(){return genPtBinsR4Cent0to10;}
+  std::vector<double> GetRecoPtBinsR4Cent0to10(){return recoPtBinsR4Cent0to10;}
+  std::vector<double> GetGenPtBinsR4Cent10to30(){return genPtBinsR4Cent10to30;}
+  std::vector<double> GetRecoPtBinsR4Cent10to30(){return recoPtBinsR4Cent10to30;}
+  std::vector<double> GetGenPtBinsR4Cent30to50(){return genPtBinsR4Cent30to50;}
+  std::vector<double> GetRecoPtBinsR4Cent30to50(){return recoPtBinsR4Cent30to50;}
+  std::vector<double> GetGenPtBinsR4Cent50to90(){return genPtBinsR4Cent50to90;}
+  std::vector<double> GetRecoPtBinsR4Cent50to90(){return recoPtBinsR4Cent50to90;}
 
-  int GetNRecoJtPtBinsSmallRCent30to50(){return nRecoJtPtBinsSmallRCent30to50;}
-  int GetNRecoJtPtBinsLargeRCent30to50(){return nRecoJtPtBinsLargeRCent30to50;}
-  int GetNGenJtPtSmallBinsSmallRCent30to50(){return nGenJtPtSmallBinsSmallRCent30to50;}
-  int GetNGenJtPtSmallBinsLargeRCent30to50(){return nGenJtPtSmallBinsLargeRCent30to50;}
-  int GetNGenJtPtLargeBinsSmallRCent30to50(){return nGenJtPtLargeBinsSmallRCent30to50;}
-  int GetNGenJtPtLargeBinsLargeRCent30to50(){return nGenJtPtLargeBinsLargeRCent30to50;}
+  std::vector<double> GetGenPtBinsR6Cent0to10(){return genPtBinsR6Cent0to10;}
+  std::vector<double> GetRecoPtBinsR6Cent0to10(){return recoPtBinsR6Cent0to10;}
+  std::vector<double> GetGenPtBinsR6Cent10to30(){return genPtBinsR6Cent10to30;}
+  std::vector<double> GetRecoPtBinsR6Cent10to30(){return recoPtBinsR6Cent10to30;}
+  std::vector<double> GetGenPtBinsR6Cent30to50(){return genPtBinsR6Cent30to50;}
+  std::vector<double> GetRecoPtBinsR6Cent30to50(){return recoPtBinsR6Cent30to50;}
+  std::vector<double> GetGenPtBinsR6Cent50to90(){return genPtBinsR6Cent50to90;}
+  std::vector<double> GetRecoPtBinsR6Cent50to90(){return recoPtBinsR6Cent50to90;}
 
-  int GetNRecoJtPtBinsSmallRCent50to90(){return nRecoJtPtBinsSmallRCent50to90;}
-  int GetNRecoJtPtBinsLargeRCent50to90(){return nRecoJtPtBinsLargeRCent50to90;}
-  int GetNGenJtPtSmallBinsSmallRCent50to90(){return nGenJtPtSmallBinsSmallRCent50to90;}
-  int GetNGenJtPtSmallBinsLargeRCent50to90(){return nGenJtPtSmallBinsLargeRCent50to90;}
-  int GetNGenJtPtLargeBinsSmallRCent50to90(){return nGenJtPtLargeBinsSmallRCent50to90;}
-  int GetNGenJtPtLargeBinsLargeRCent50to90(){return nGenJtPtLargeBinsLargeRCent50to90;}
+  std::vector<double> GetGenPtBinsR8Cent0to10(){return genPtBinsR8Cent0to10;}
+  std::vector<double> GetRecoPtBinsR8Cent0to10(){return recoPtBinsR8Cent0to10;}
+  std::vector<double> GetGenPtBinsR8Cent10to30(){return genPtBinsR8Cent10to30;}
+  std::vector<double> GetRecoPtBinsR8Cent10to30(){return recoPtBinsR8Cent10to30;}
+  std::vector<double> GetGenPtBinsR8Cent30to50(){return genPtBinsR8Cent30to50;}
+  std::vector<double> GetRecoPtBinsR8Cent30to50(){return recoPtBinsR8Cent30to50;}
+  std::vector<double> GetGenPtBinsR8Cent50to90(){return genPtBinsR8Cent50to90;}
+  std::vector<double> GetRecoPtBinsR8Cent50to90(){return recoPtBinsR8Cent50to90;}
 
-  //bins are are double for convenience; int would be fine and delta is loose to account
-  std::vector<double> GetRecoJtPtBinsSmallR(){return recoJtPtBinsSmallR;}
-  std::vector<double> GetRecoJtPtBinsLargeR(){return recoJtPtBinsLargeR;}
-  std::vector<double> GetGenJtPtSmallBinsSmallR(){return genJtPtSmallBinsSmallR;}
-  std::vector<double> GetGenJtPtSmallBinsLargeR(){return genJtPtSmallBinsLargeR;}
-  std::vector<double> GetGenJtPtLargeBinsSmallR(){return genJtPtLargeBinsSmallR;}
-  std::vector<double> GetGenJtPtLargeBinsLargeR(){return genJtPtLargeBinsLargeR;}
+  std::vector<double> GetGenPtBinsR10Cent0to10(){return genPtBinsR10Cent0to10;}
+  std::vector<double> GetRecoPtBinsR10Cent0to10(){return recoPtBinsR10Cent0to10;}
+  std::vector<double> GetGenPtBinsR10Cent10to30(){return genPtBinsR10Cent10to30;}
+  std::vector<double> GetRecoPtBinsR10Cent10to30(){return recoPtBinsR10Cent10to30;}
+  std::vector<double> GetGenPtBinsR10Cent30to50(){return genPtBinsR10Cent30to50;}
+  std::vector<double> GetRecoPtBinsR10Cent30to50(){return recoPtBinsR10Cent30to50;}
+  std::vector<double> GetGenPtBinsR10Cent50to90(){return genPtBinsR10Cent50to90;}
+  std::vector<double> GetRecoPtBinsR10Cent50to90(){return recoPtBinsR10Cent50to90;}
 
-  int GetNGeneralBinsSmallR(){return nGeneralBinsSmallR;}
-  int GetNGeneralBinsLargeR(){return nGeneralBinsLargeR;}
+  std::vector<double> GetGenPtBins(int rVal, std::string centStr);
+  std::vector<double> GetRecoPtBins(int rVal, std::string centStr);
 
-  std::vector<double> GetGeneralBinsSmallR(){return generalBinsSmallR;}
-  std::vector<double> GetGeneralBinsLargeR(){return generalBinsLargeR;}
+  int GetGenNBinsFromRValCent(int rVal, std::string centStr);
+  void GetGenBinsFromRValCent(int rVal, std::string centStr, double outBins[]);
+  int GetRecoNBinsFromRValCent(int rVal, std::string centStr);
+  void GetRecoBinsFromRValCent(int rVal, std::string centStr, double outBins[]);
 
-  int GetNGeneralBins(bool isSmallR);
-  std::vector<double> GetGeneralBins(bool isSmallR);
-  void GetGeneralBins(bool isSmallR, Int_t nBins, Double_t bins[]);
-
-  bool CheckNSmallR(int inNSmallR);
-  bool CheckNLargeR(int inNLargeR);
+  int GetNGeneralBins(){return nGeneralBins;}
+  std::vector<double> GetGeneralBins(){return generalBins;}
+  void GetGeneralBins(Int_t nBins, Double_t bins[]);
 
   bool CheckIntVect(std::vector<int> vect1, std::vector<int> vect2);
-  bool CheckSmallRVals(std::vector<int> inSmallRVals);
-  bool CheckLargeRVals(std::vector<int> inLargeRVals);
-
   bool CheckNBins(int inNBins, int compNBins, std::string nBinsStr);
-  void SizeIsLTOrEQ(int inNBins, std::vector<double> inBins, std::string nBinsStr, std::string binsStr);
-  
-  bool CheckNRecoJtPtBinsSmallRCent0to10(int inNRecoJtPtBinsSmallRCent0to10);
-  bool CheckNRecoJtPtBinsLargeRCent0to10(int inNRecoJtPtBinsLargeRCent0to10);
-  bool CheckNGenJtPtSmallBinsSmallRCent0to10(int inNGenJtPtSmallBinsSmallRCent0to10);
-  bool CheckNGenJtPtSmallBinsLargeRCent0to10(int inNGenJtPtSmallBinsLargeRCent0to10);
-  bool CheckNGenJtPtLargeBinsSmallRCent0to10(int inNGenJtPtLargeBinsSmallRCent0to10);
-  bool CheckNGenJtPtLargeBinsLargeRCent0to10(int inNGenJtPtLargeBinsLargeRCent0to10);
-
-  bool CheckNRecoJtPtBinsSmallRCent10to30(int inNRecoJtPtBinsSmallRCent10to30);
-  bool CheckNRecoJtPtBinsLargeRCent10to30(int inNRecoJtPtBinsLargeRCent10to30);
-  bool CheckNGenJtPtSmallBinsSmallRCent10to30(int inNGenJtPtSmallBinsSmallRCent10to30);
-  bool CheckNGenJtPtSmallBinsLargeRCent10to30(int inNGenJtPtSmallBinsLargeRCent10to30);
-  bool CheckNGenJtPtLargeBinsSmallRCent10to30(int inNGenJtPtLargeBinsSmallRCent10to30);
-  bool CheckNGenJtPtLargeBinsLargeRCent10to30(int inNGenJtPtLargeBinsLargeRCent10to30);
-
-  bool CheckNRecoJtPtBinsSmallRCent30to50(int inNRecoJtPtBinsSmallRCent30to50);
-  bool CheckNRecoJtPtBinsLargeRCent30to50(int inNRecoJtPtBinsLargeRCent30to50);
-  bool CheckNGenJtPtSmallBinsSmallRCent30to50(int inNGenJtPtSmallBinsSmallRCent30to50);
-  bool CheckNGenJtPtSmallBinsLargeRCent30to50(int inNGenJtPtSmallBinsLargeRCent30to50);
-  bool CheckNGenJtPtLargeBinsSmallRCent30to50(int inNGenJtPtLargeBinsSmallRCent30to50);
-  bool CheckNGenJtPtLargeBinsLargeRCent30to50(int inNGenJtPtLargeBinsLargeRCent30to50);
-
-  bool CheckNRecoJtPtBinsSmallRCent50to90(int inNRecoJtPtBinsSmallRCent50to90);
-  bool CheckNRecoJtPtBinsLargeRCent50to90(int inNRecoJtPtBinsLargeRCent50to90);
-  bool CheckNGenJtPtSmallBinsSmallRCent50to90(int inNGenJtPtSmallBinsSmallRCent50to90);
-  bool CheckNGenJtPtSmallBinsLargeRCent50to90(int inNGenJtPtSmallBinsLargeRCent50to90);
-  bool CheckNGenJtPtLargeBinsSmallRCent50to90(int inNGenJtPtLargeBinsSmallRCent50to90);
-  bool CheckNGenJtPtLargeBinsLargeRCent50to90(int inNGenJtPtLargeBinsLargeRCent50to90);
+  void SizeIsLTOrEQ(int inNBins, std::vector<double> inBins, std::string nBinsStr, std::string binsStr);  
 
   bool CheckDoubleVect(std::vector<double> vect1, std::vector<double> vect2);
-  bool CheckRecoJtPtBinsSmallR(std::vector<double> inRecoJtPtBinsSmallR);
-  bool CheckRecoJtPtBinsLargeR(std::vector<double> inRecoJtPtBinsLargeR);
-  bool CheckGenJtPtSmallBinsSmallR(std::vector<double> inGenJtPtSmallBinsSmallR);
-  bool CheckGenJtPtSmallBinsLargeR(std::vector<double> inGenJtPtSmallBinsLargeR);
-  bool CheckGenJtPtLargeBinsSmallR(std::vector<double> inGenJtPtLargeBinsSmallR);
-  bool CheckGenJtPtLargeBinsLargeR(std::vector<double> inGenJtPtLargeBinsLargeR);
-
-  bool GetIsSmallR(int rVal); 
-  bool GetIsLargeR(int rVal);
-  bool GetIsSmallOrLargeR(std::vector<int> vals, int rVal);
-  bool GetIsSmallOrLargeR(int nVals, int vals[], int rVal);
-
-  int GetSmallOrLargeRNBins(bool isSmallR, bool isGen, bool getSmallBins, std::string centStr);
-  void GetSmallOrLargeRBins(bool isSmallR, bool isGen, int nBins, double bins[], bool getSmallBins);
 };
 
-
 smallOrLargeR::smallOrLargeR()
-{
-  SizeIsLTOrEQ(nRecoJtPtBinsSmallRCent0to10+1, recoJtPtBinsSmallR, "nRecoJtPtBinsSmallRCent0to10+1", "recoJtPtBinsSmallR.size()");
-  SizeIsLTOrEQ(nRecoJtPtBinsLargeRCent0to10+1, recoJtPtBinsLargeR, "nRecoJtPtBinsLargeRCent0to10+1", "recoJtPtBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsSmallRCent0to10+1, genJtPtSmallBinsSmallR, "nGenJtPtSmallBinsSmallRCent0to10+1", "genJtPtSmallBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsLargeRCent0to10+1, genJtPtSmallBinsLargeR, "nGenJtPtSmallBinsLargeRCent0to10+1", "genJtPtSmallBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsSmallRCent0to10+1, genJtPtLargeBinsSmallR, "nGenJtPtLargeBinsSmallRCent0to10+1", "genJtPtLargeBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsLargeRCent0to10+1, genJtPtLargeBinsLargeR, "nGenJtPtLargeBinsLargeRCent0to10+1", "genJtPtLargeBinsLargeR.size()");
-
-  SizeIsLTOrEQ(nRecoJtPtBinsSmallRCent10to30+1, recoJtPtBinsSmallR, "nRecoJtPtBinsSmallRCent10to30+1", "recoJtPtBinsSmallR.size()");
-  SizeIsLTOrEQ(nRecoJtPtBinsLargeRCent10to30+1, recoJtPtBinsLargeR, "nRecoJtPtBinsLargeRCent10to30+1", "recoJtPtBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsSmallRCent10to30+1, genJtPtSmallBinsSmallR, "nGenJtPtSmallBinsSmallRCent10to30+1", "genJtPtSmallBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsLargeRCent10to30+1, genJtPtSmallBinsLargeR, "nGenJtPtSmallBinsLargeRCent10to30+1", "genJtPtSmallBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsSmallRCent10to30+1, genJtPtLargeBinsSmallR, "nGenJtPtLargeBinsSmallRCent10to30+1", "genJtPtLargeBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsLargeRCent10to30+1, genJtPtLargeBinsLargeR, "nGenJtPtLargeBinsLargeRCent10to30+1", "genJtPtLargeBinsLargeR.size()");
- 
-  SizeIsLTOrEQ(nRecoJtPtBinsSmallRCent30to50+1, recoJtPtBinsSmallR, "nRecoJtPtBinsSmallRCent30to50+1", "recoJtPtBinsSmallR.size()");
-  SizeIsLTOrEQ(nRecoJtPtBinsLargeRCent30to50+1, recoJtPtBinsLargeR, "nRecoJtPtBinsLargeRCent30to50+1", "recoJtPtBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsSmallRCent30to50+1, genJtPtSmallBinsSmallR, "nGenJtPtSmallBinsSmallRCent30to50+1", "genJtPtSmallBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsLargeRCent30to50+1, genJtPtSmallBinsLargeR, "nGenJtPtSmallBinsLargeRCent30to50+1", "genJtPtSmallBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsSmallRCent30to50+1, genJtPtLargeBinsSmallR, "nGenJtPtLargeBinsSmallRCent30to50+1", "genJtPtLargeBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsLargeRCent30to50+1, genJtPtLargeBinsLargeR, "nGenJtPtLargeBinsLargeRCent30to50+1", "genJtPtLargeBinsLargeR.size()");
-
-  SizeIsLTOrEQ(nRecoJtPtBinsSmallRCent50to90+1, recoJtPtBinsSmallR, "nRecoJtPtBinsSmallRCent50to90+1", "recoJtPtBinsSmallR.size()");
-  SizeIsLTOrEQ(nRecoJtPtBinsLargeRCent50to90+1, recoJtPtBinsLargeR, "nRecoJtPtBinsLargeRCent50to90+1", "recoJtPtBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsSmallRCent50to90+1, genJtPtSmallBinsSmallR, "nGenJtPtSmallBinsSmallRCent50to90+1", "genJtPtSmallBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtSmallBinsLargeRCent50to90+1, genJtPtSmallBinsLargeR, "nGenJtPtSmallBinsLargeRCent50to90+1", "genJtPtSmallBinsLargeR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsSmallRCent50to90+1, genJtPtLargeBinsSmallR, "nGenJtPtLargeBinsSmallRCent50to90+1", "genJtPtLargeBinsSmallR.size()");
-  SizeIsLTOrEQ(nGenJtPtLargeBinsLargeRCent50to90+1, genJtPtLargeBinsLargeR, "nGenJtPtLargeBinsLargeRCent50to90+1", "genJtPtLargeBinsLargeR.size()");
- 
-  generalBinsSmallR.reserve(nGeneralBinsSmallR+1);
-  generalBinsLargeR.reserve(nGeneralBinsLargeR+1);
-
-  for(Int_t bI = 0; bI < nGeneralBinsSmallR+1; ++bI){
-    generalBinsSmallR.push_back(generalBinsSmallRLow + bI*generalBinsInterval);
+{ 
+  generalBins.reserve(nGeneralBins+1);
+  
+  for(Int_t bI = 0; bI < nGeneralBins+1; ++bI){
+    generalBins.push_back(generalBinsLow + bI*generalBinsInterval);
   }
-
-  for(Int_t bI = 0; bI < nGeneralBinsLargeR+1; ++bI){
-    generalBinsLargeR.push_back(generalBinsLargeRLow + bI*generalBinsInterval);
-  }
-
+  
   return;
 }
 
-
-int smallOrLargeR::GetNGeneralBins(bool isSmallR)
+int smallOrLargeR::GetGenNBinsFromRValCent(int rVal, std::string centStr)
 {
-  if(isSmallR) return nGeneralBinsSmallR;
-  else return nGeneralBinsLargeR;
+  return GetGenPtBins(rVal, centStr).size()-1;
 }
 
-std::vector<double> smallOrLargeR::GetGeneralBins(bool isSmallR)
+int smallOrLargeR::GetRecoNBinsFromRValCent(int rVal, std::string centStr)
 {
-  if(isSmallR) return generalBinsSmallR;
-  else return generalBinsLargeR;
+  return GetRecoPtBins(rVal, centStr).size()-1;
 }
 
-void smallOrLargeR::GetGeneralBins(bool isSmallR, Int_t nBins, Double_t bins[])
+void smallOrLargeR::GetGenBinsFromRValCent(int rVal, std::string centStr, double outBins[])
+{
+  std::vector<double> bins = GetGenPtBins(rVal,centStr);
+
+  for(unsigned int bI = 0; bI < bins.size(); ++bI){
+    outBins[bI] = bins[bI];
+  }
+  return;
+}
+
+void smallOrLargeR::GetRecoBinsFromRValCent(int rVal, std::string centStr, double outBins[])
+{
+  std::vector<double> bins = GetRecoPtBins(rVal,centStr);
+
+  for(unsigned int bI = 0; bI < bins.size(); ++bI){
+    outBins[bI] = bins[bI];
+  }
+  return;
+}
+ 
+std::vector<double> smallOrLargeR::GetGenPtBins(int rVal, std::string centStr)
+{
+  if(rVal == 2){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR2Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR2Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR2Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR2Cent50to90;
+  }
+  else if(rVal == 3){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR3Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR3Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR3Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR3Cent50to90;
+  }
+  else if(rVal == 4){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR4Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR4Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR4Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR4Cent50to90;
+  }
+  else if(rVal == 6){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR6Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR6Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR6Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR6Cent50to90;
+  }
+  else if(rVal == 8){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR8Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR8Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR8Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR8Cent50to90;
+  }
+  else if(rVal == 10){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR10Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR10Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR10Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR10Cent50to90;
+  }
+
+  return {};
+}
+
+std::vector<double> smallOrLargeR::GetRecoPtBins(int rVal, std::string centStr)
+{
+  if(rVal == 2){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR2Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR2Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR2Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR2Cent50to90;
+  }
+  else if(rVal == 3){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR3Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR3Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR3Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR3Cent50to90;
+  }
+  else if(rVal == 4){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR4Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR4Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR4Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR4Cent50to90;
+  }
+  else if(rVal == 6){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR6Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR6Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR6Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR6Cent50to90;
+  }
+  else if(rVal == 8){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR8Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR8Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR8Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR8Cent50to90;
+  }
+  else if(rVal == 10){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR10Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR10Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR10Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR10Cent50to90;
+  }
+
+  return {};
+}
+
+
+void smallOrLargeR::GetGeneralBins(Int_t nBins, Double_t bins[])
 {
   for(Int_t bI = 0; bI < nBins+1; ++bI){
-    if(isSmallR) bins[bI] = generalBinsSmallR[bI];
-    else bins[bI] = generalBinsLargeR[bI];
+    bins[bI] = generalBins[bI];
   }
   return;
-}
-
-bool smallOrLargeR::CheckNSmallR(int inNSmallR)
-{
-  bool isGood = inNSmallR == nSmallR;
-  if(!isGood) std::cout << "WARNING: nSmallR propagated \'" << inNSmallR << "\' doesn't match rReader \'" << nSmallR << "\'. return false" << std::endl;
-  return isGood;
-}
-
-bool smallOrLargeR::CheckNLargeR(int inNLargeR)
-{
-  bool isGood = inNLargeR == nLargeR;
-  if(!isGood) std::cout << "WARNING: nLargeR propagated \'" << inNLargeR << "\' doesn't match rReader \'" << nLargeR << "\'. return false" << std::endl;
-  return isGood;
 }
 
 bool smallOrLargeR::CheckIntVect(std::vector<int> vect1, std::vector<int> vect2)
@@ -378,18 +297,6 @@ bool smallOrLargeR::CheckIntVect(std::vector<int> vect1, std::vector<int> vect2)
       }
     }
   }
-  return isGood;
-}
-bool smallOrLargeR::CheckSmallRVals(std::vector<int> inSmallRVals)
-{
-  bool isGood = CheckIntVect(inSmallRVals, smallRVals);
-  if(!isGood) std::cout << "WARNING: smallRVals propagated doesn't match rReader . return false" << std::endl;
-  return isGood;
-}
-bool smallOrLargeR::CheckLargeRVals(std::vector<int> inLargeRVals)
-{
-  bool isGood = CheckIntVect(inLargeRVals, largeRVals);
-  if(!isGood) std::cout << "WARNING: largeRVals propagated doesn't match rReader . return false" << std::endl;
   return isGood;
 }
 
@@ -408,37 +315,6 @@ void smallOrLargeR::SizeIsLTOrEQ(int inNBins, std::vector<double> inBins, std::s
   return;
 }
 
-bool smallOrLargeR::CheckNRecoJtPtBinsSmallRCent0to10(int inNRecoJtPtBinsSmallRCent0to10){return CheckNBins(inNRecoJtPtBinsSmallRCent0to10, nRecoJtPtBinsSmallRCent0to10, "nRecoJtPtBinsSmallRCent0to10");}
-bool smallOrLargeR::CheckNRecoJtPtBinsLargeRCent0to10(int inNRecoJtPtBinsLargeRCent0to10){return CheckNBins(inNRecoJtPtBinsLargeRCent0to10, nRecoJtPtBinsLargeRCent0to10, "nRecoJtPtBinsLargeRCent0to10");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsSmallRCent0to10(int inNGenJtPtSmallBinsSmallRCent0to10){return CheckNBins(inNGenJtPtSmallBinsSmallRCent0to10, nGenJtPtSmallBinsSmallRCent0to10, "nGenJtPtSmallBinsSmallRCent0to10");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsLargeRCent0to10(int inNGenJtPtSmallBinsLargeRCent0to10){return CheckNBins(inNGenJtPtSmallBinsLargeRCent0to10, nGenJtPtSmallBinsLargeRCent0to10, "nGenJtPtSmallBinsLargeRCent0to10");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsSmallRCent0to10(int inNGenJtPtLargeBinsSmallRCent0to10){return CheckNBins(inNGenJtPtLargeBinsSmallRCent0to10, nGenJtPtLargeBinsSmallRCent0to10, "nGenJtPtLargeBinsSmallRCent0to10");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsLargeRCent0to10(int inNGenJtPtLargeBinsLargeRCent0to10){return CheckNBins(inNGenJtPtLargeBinsLargeRCent0to10, nGenJtPtLargeBinsLargeRCent0to10, "nGenJtPtLargeBinsLargeRCent0to10");}
-  
-
-bool smallOrLargeR::CheckNRecoJtPtBinsSmallRCent10to30(int inNRecoJtPtBinsSmallRCent10to30){return CheckNBins(inNRecoJtPtBinsSmallRCent10to30, nRecoJtPtBinsSmallRCent10to30, "nRecoJtPtBinsSmallRCent10to30");}
-bool smallOrLargeR::CheckNRecoJtPtBinsLargeRCent10to30(int inNRecoJtPtBinsLargeRCent10to30){return CheckNBins(inNRecoJtPtBinsLargeRCent10to30, nRecoJtPtBinsLargeRCent10to30, "nRecoJtPtBinsLargeRCent10to30");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsSmallRCent10to30(int inNGenJtPtSmallBinsSmallRCent10to30){return CheckNBins(inNGenJtPtSmallBinsSmallRCent10to30, nGenJtPtSmallBinsSmallRCent10to30, "nGenJtPtSmallBinsSmallRCent10to30");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsLargeRCent10to30(int inNGenJtPtSmallBinsLargeRCent10to30){return CheckNBins(inNGenJtPtSmallBinsLargeRCent10to30, nGenJtPtSmallBinsLargeRCent10to30, "nGenJtPtSmallBinsLargeRCent10to30");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsSmallRCent10to30(int inNGenJtPtLargeBinsSmallRCent10to30){return CheckNBins(inNGenJtPtLargeBinsSmallRCent10to30, nGenJtPtLargeBinsSmallRCent10to30, "nGenJtPtLargeBinsSmallRCent10to30");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsLargeRCent10to30(int inNGenJtPtLargeBinsLargeRCent10to30){return CheckNBins(inNGenJtPtLargeBinsLargeRCent10to30, nGenJtPtLargeBinsLargeRCent10to30, "nGenJtPtLargeBinsLargeRCent10to30");}
-  
-
-bool smallOrLargeR::CheckNRecoJtPtBinsSmallRCent30to50(int inNRecoJtPtBinsSmallRCent30to50){return CheckNBins(inNRecoJtPtBinsSmallRCent30to50, nRecoJtPtBinsSmallRCent30to50, "nRecoJtPtBinsSmallRCent30to50");}
-bool smallOrLargeR::CheckNRecoJtPtBinsLargeRCent30to50(int inNRecoJtPtBinsLargeRCent30to50){return CheckNBins(inNRecoJtPtBinsLargeRCent30to50, nRecoJtPtBinsLargeRCent30to50, "nRecoJtPtBinsLargeRCent30to50");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsSmallRCent30to50(int inNGenJtPtSmallBinsSmallRCent30to50){return CheckNBins(inNGenJtPtSmallBinsSmallRCent30to50, nGenJtPtSmallBinsSmallRCent30to50, "nGenJtPtSmallBinsSmallRCent30to50");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsLargeRCent30to50(int inNGenJtPtSmallBinsLargeRCent30to50){return CheckNBins(inNGenJtPtSmallBinsLargeRCent30to50, nGenJtPtSmallBinsLargeRCent30to50, "nGenJtPtSmallBinsLargeRCent30to50");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsSmallRCent30to50(int inNGenJtPtLargeBinsSmallRCent30to50){return CheckNBins(inNGenJtPtLargeBinsSmallRCent30to50, nGenJtPtLargeBinsSmallRCent30to50, "nGenJtPtLargeBinsSmallRCent30to50");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsLargeRCent30to50(int inNGenJtPtLargeBinsLargeRCent30to50){return CheckNBins(inNGenJtPtLargeBinsLargeRCent30to50, nGenJtPtLargeBinsLargeRCent30to50, "nGenJtPtLargeBinsLargeRCent30to50");}
-  
-
-bool smallOrLargeR::CheckNRecoJtPtBinsSmallRCent50to90(int inNRecoJtPtBinsSmallRCent50to90){return CheckNBins(inNRecoJtPtBinsSmallRCent50to90, nRecoJtPtBinsSmallRCent50to90, "nRecoJtPtBinsSmallRCent50to90");}
-bool smallOrLargeR::CheckNRecoJtPtBinsLargeRCent50to90(int inNRecoJtPtBinsLargeRCent50to90){return CheckNBins(inNRecoJtPtBinsLargeRCent50to90, nRecoJtPtBinsLargeRCent50to90, "nRecoJtPtBinsLargeRCent50to90");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsSmallRCent50to90(int inNGenJtPtSmallBinsSmallRCent50to90){return CheckNBins(inNGenJtPtSmallBinsSmallRCent50to90, nGenJtPtSmallBinsSmallRCent50to90, "nGenJtPtSmallBinsSmallRCent50to90");}
-bool smallOrLargeR::CheckNGenJtPtSmallBinsLargeRCent50to90(int inNGenJtPtSmallBinsLargeRCent50to90){return CheckNBins(inNGenJtPtSmallBinsLargeRCent50to90, nGenJtPtSmallBinsLargeRCent50to90, "nGenJtPtSmallBinsLargeRCent50to90");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsSmallRCent50to90(int inNGenJtPtLargeBinsSmallRCent50to90){return CheckNBins(inNGenJtPtLargeBinsSmallRCent50to90, nGenJtPtLargeBinsSmallRCent50to90, "nGenJtPtLargeBinsSmallRCent50to90");}
-bool smallOrLargeR::CheckNGenJtPtLargeBinsLargeRCent50to90(int inNGenJtPtLargeBinsLargeRCent50to90){return CheckNBins(inNGenJtPtLargeBinsLargeRCent50to90, nGenJtPtLargeBinsLargeRCent50to90, "nGenJtPtLargeBinsLargeRCent50to90");}  
-
 
 bool smallOrLargeR::CheckDoubleVect(std::vector<double> vect1, std::vector<double> vect2)
 {
@@ -453,111 +329,6 @@ bool smallOrLargeR::CheckDoubleVect(std::vector<double> vect1, std::vector<doubl
   }
   return isGood;
 }
-bool smallOrLargeR::CheckRecoJtPtBinsSmallR(std::vector<double> inRecoJtPtBinsSmallR)
-{
-  bool isGood = CheckDoubleVect(recoJtPtBinsSmallR, inRecoJtPtBinsSmallR);
-  if(!isGood) std::cout << "WARNING: recoJtPtBinsSmallR propagated doesn't match rReader. return false" << std::endl;
-  return isGood;
-}
-bool smallOrLargeR::CheckRecoJtPtBinsLargeR(std::vector<double> inRecoJtPtBinsLargeR)
-{
-  bool isGood = CheckDoubleVect(recoJtPtBinsLargeR, inRecoJtPtBinsLargeR);
-  if(!isGood) std::cout << "WARNING: recoJtPtBinsLargeR propagated doesn't match rReader. return false" << std::endl;
-  return isGood;
-}
-bool smallOrLargeR::CheckGenJtPtSmallBinsSmallR(std::vector<double> inGenJtPtSmallBinsSmallR)
-{
-  bool isGood = CheckDoubleVect(genJtPtSmallBinsSmallR, inGenJtPtSmallBinsSmallR);
-  if(!isGood) std::cout << "WARNING: genJtPtSmallBinsSmallR propagated doesn't match rReader. return false" << std::endl;
-  return isGood;
-}
-bool smallOrLargeR::CheckGenJtPtSmallBinsLargeR(std::vector<double> inGenJtPtSmallBinsLargeR)
-{
-  bool isGood = CheckDoubleVect(genJtPtSmallBinsLargeR, inGenJtPtSmallBinsLargeR);
-  if(!isGood) std::cout << "WARNING: genJtPtSmallBinsLargeR propagated doesn't match rReader. return false" << std::endl;
-  return isGood;
-}
 
-bool smallOrLargeR::CheckGenJtPtLargeBinsSmallR(std::vector<double> inGenJtPtLargeBinsSmallR)
-{
-  bool isGood = CheckDoubleVect(genJtPtLargeBinsSmallR, inGenJtPtLargeBinsSmallR);
-  if(!isGood) std::cout << "WARNING: genJtPtLargeBinsSmallR propagated doesn't match rReader. return false" << std::endl;
-  return isGood;
-}
-bool smallOrLargeR::CheckGenJtPtLargeBinsLargeR(std::vector<double> inGenJtPtLargeBinsLargeR)
-{
-  bool isGood = CheckDoubleVect(genJtPtLargeBinsLargeR, inGenJtPtLargeBinsLargeR);
-  if(!isGood) std::cout << "WARNING: genJtPtLargeBinsLargeR propagated doesn't match rReader. return false" << std::endl;
-  return isGood;
-}
-
-
-bool smallOrLargeR::GetIsSmallOrLargeR(std::vector<int> vals, int rVal)
-{
-  for(unsigned int bI = 0; bI < vals.size(); ++bI){
-    if(vals.at(bI) == rVal) return true;
-  }
-  return false;
-}
-bool smallOrLargeR::GetIsSmallOrLargeR(int nVals, int vals[], int rVal)
-{
-  for(int bI = 0; bI < nVals; ++bI){
-    if(vals[bI] == rVal) return true;
-  }
-  return false;
-}
-bool smallOrLargeR::GetIsSmallR(int rVal){return GetIsSmallOrLargeR(smallRVals, rVal);}
-bool smallOrLargeR::GetIsLargeR(int rVal){return GetIsSmallOrLargeR(largeRVals, rVal);}
-
-int smallOrLargeR::GetSmallOrLargeRNBins(bool isSmallR, bool isGen, bool getSmallBins, std::string centStr)
-{
-  if(centStr.find("Cent0to10") != std::string::npos){
-    if(isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsSmallRCent0to10;
-    else if(isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsSmallRCent0to10;
-    else if(isSmallR && !isGen) return nRecoJtPtBinsSmallRCent0to10;
-    else if(!isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsLargeRCent0to10;
-    else if(!isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsLargeRCent0to10;
-    else if(!isSmallR && !isGen) return nRecoJtPtBinsLargeRCent0to10;
-  }
-  else if(centStr.find("Cent10to30") != std::string::npos){
-    if(isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsSmallRCent10to30;
-    else if(isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsSmallRCent10to30;
-    else if(isSmallR && !isGen) return nRecoJtPtBinsSmallRCent10to30;
-    else if(!isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsLargeRCent10to30;
-    else if(!isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsLargeRCent10to30;
-    else if(!isSmallR && !isGen) return nRecoJtPtBinsLargeRCent10to30;
-  }
-  else if(centStr.find("Cent30to50") != std::string::npos){
-    if(isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsSmallRCent30to50;
-    else if(isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsSmallRCent30to50;
-    else if(isSmallR && !isGen) return nRecoJtPtBinsSmallRCent30to50;
-    else if(!isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsLargeRCent30to50;
-    else if(!isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsLargeRCent30to50;
-    else if(!isSmallR && !isGen) return nRecoJtPtBinsLargeRCent30to50;
-  }
-  else if(centStr.find("Cent50to90") != std::string::npos){
-    if(isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsSmallRCent50to90;
-    else if(isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsSmallRCent50to90;
-    else if(isSmallR && !isGen) return nRecoJtPtBinsSmallRCent50to90;
-    else if(!isSmallR && isGen && getSmallBins) return nGenJtPtSmallBinsLargeRCent50to90;
-    else if(!isSmallR && isGen && !getSmallBins) return nGenJtPtLargeBinsLargeRCent50to90;
-    else if(!isSmallR && !isGen) return nRecoJtPtBinsLargeRCent50to90;
-  }
-
-  return -1;
-}
-
-void smallOrLargeR::GetSmallOrLargeRBins(bool isSmallR, bool isGen, int nBins, double bins[], bool getSmallBins)
-{ 
-  for(int i = 0; i < nBins; ++i){
-    if(isSmallR && isGen && getSmallBins) bins[i] = genJtPtSmallBinsSmallR[i];
-    else if(isSmallR && isGen && !getSmallBins) bins[i] = genJtPtLargeBinsSmallR[i];
-    else if(isSmallR && !isGen) bins[i] = recoJtPtBinsSmallR[i];
-    else if(!isSmallR && isGen && getSmallBins) bins[i] = genJtPtSmallBinsLargeR[i];
-    else if(!isSmallR && isGen && !getSmallBins) bins[i] = genJtPtLargeBinsLargeR[i];
-    else if(!isSmallR && !isGen) bins[i] = recoJtPtBinsLargeR[i];   
-  }
-  return;
-}
 
 #endif

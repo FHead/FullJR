@@ -9,8 +9,8 @@
 int quickHistSum(std::string inFileName, double xMin, double yMin, double xMax, double yMax)
 {
   TFile* inFile_p = new TFile(inFileName.c_str(), "READ");
-  //  TH2D* hist_p = (TH2D*)inFile_p->Get("akCs10PU3PFFlowJetAnalyzer/response_SmallBins_akCs10PU3PFFlowJetAnalyzer_PbPb_Cent0to10_LightMUAndCHID_ResponseMod0p10_AbsEta0p0to2p0_RecoGenAsymm_h");
-  TH2D* hist_p = (TH2D*)inFile_p->Get("akCs10PU3PFFlowJetAnalyzer/response_akCs10PU3PFFlowJetAnalyzer_PbPb_Cent0to10_LightMUAndCHID_ResponseMod0p10_AbsEta0p0to2p0_General_h");
+  //  TH2D* hist_p = (TH2D*)inFile_p->Get("akCs4PU3PFFlowJetAnalyzer/response_SmallBins_akCs4PU3PFFlowJetAnalyzer_PbPb_Cent0to10_LightMUAndCHID_ResponseMod0p10_AbsEta0p0to2p0_RecoGenAsymm_h");
+  TH2D* hist_p = (TH2D*)inFile_p->Get("akCs4PU3PFFlowJetAnalyzer/response_akCs4PU3PFFlowJetAnalyzer_PbPb_Cent0to10_LightMUAndCHID_ResponseMod0p10_AbsEta0p0to2p0_General_h");
 
   Double_t sum = 0.0;
   for(Int_t bIX = 0; bIX < hist_p->GetXaxis()->GetNbins(); ++bIX){

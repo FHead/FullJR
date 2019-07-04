@@ -24,7 +24,7 @@ int checkUnfoldTermination(const std::string inFileName)
   cutProp.Clean();
   cutProp.GetAllVarFromFile(inFile_p);
  
-  std::vector<std::string> histTag = cutProp.GetHistTag();
+  std::vector<std::string> histTag = cutProp.GetHistTagBayes();
   std::vector<int> histBestBayes = cutProp.GetHistBestBayes();
 
   int totalNegPos = 0;

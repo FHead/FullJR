@@ -4,6 +4,16 @@
 #include <vector>
 
 #include "TH1.h"
+#include "TGraph.h"
+
+void centerTitles(TGraph* hist_p)
+{
+  hist_p->GetXaxis()->CenterTitle();
+  hist_p->GetYaxis()->CenterTitle();
+  
+  return;
+}
+
 
 void centerTitles(TH1* hist_p)
 {

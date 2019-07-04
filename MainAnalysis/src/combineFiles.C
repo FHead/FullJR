@@ -170,8 +170,11 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
   cutPropagator prevProp;
   prevProp.Clean();
 
-  std::vector<std::string> combinedHistTag;
+  std::vector<std::string> combinedHistTagBayes;
   std::vector<int> combinedBestBayes;
+
+  std::vector<std::string> combinedHistTagSVD;
+  std::vector<int> combinedBestSVD;
 
   std::vector<std::string> tdirNameVect;
   std::vector<std::vector<std::string> > tdirNamePerFile;
@@ -183,6 +186,26 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
   std::vector<double> multiJtPt;
   std::vector<int> recoTruncPos;
 
+  const Int_t nMaxJtAlgos = 10;
+  const Int_t nMaxCentBins = 4;
+
+  const Int_t nMaxPtBins = 500;
+  Int_t nGenPtBins[nMaxJtAlgos][nMaxCentBins];
+  Int_t nRecoPtBins[nMaxJtAlgos][nMaxCentBins];
+  Double_t genPtBins[nMaxJtAlgos][nMaxCentBins][nMaxPtBins];
+  Double_t recoPtBins[nMaxJtAlgos][nMaxCentBins][nMaxPtBins];
+  
+  for(Int_t jI = 0; jI < nMaxJtAlgos; ++jI){
+    for(Int_t cI = 0; cI < nMaxCentBins; ++cI){
+      nGenPtBins[jI][cI] = -1;
+      nRecoPtBins[jI][cI] = -1;
+    }
+  }
+
+  std::vector<std::string> globalAlgos;
+  std::vector<int> centBinsLow;
+  std::vector<int> centBinsHi;
+
   for(unsigned int fI = 0; fI < fileList.size(); ++fI){
     std::cout << " " << fI << "/" << fileList.size() << ": " << fileList.at(fI) << std::endl;
     TFile* inFile_p = new TFile(fileList.at(fI).c_str(), "READ");
@@ -191,21 +214,47 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
     cutPropCurrent.Clean();    
     cutPropCurrent.GetAllVarFromFile(inFile_p);
     
-    std::vector<std::string> tempHistTag = cutPropCurrent.GetHistTag();
+    std::vector<std::string> tempHistTagBayes = cutPropCurrent.GetHistTagBayes();
     std::vector<int> tempHistBestBayes = cutPropCurrent.GetHistBestBayes();
 
-    if(tempHistTag.size() != 0){
-      combinedHistTag.insert(combinedHistTag.end(), tempHistTag.begin(), tempHistTag.end());
+    std::vector<std::string> tempHistTagSVD = cutPropCurrent.GetHistTagSVD();
+    std::vector<int> tempHistBestSVD = cutPropCurrent.GetHistBestSVD();
+
+    if(tempHistTagBayes.size() != 0){
+      combinedHistTagBayes.insert(combinedHistTagBayes.end(), tempHistTagBayes.begin(), tempHistTagBayes.end());
       combinedBestBayes.insert(combinedBestBayes.end(), tempHistBestBayes.begin(), tempHistBestBayes.end());
     }
 
+    if(tempHistTagSVD.size() != 0){
+      combinedHistTagSVD.insert(combinedHistTagSVD.end(), tempHistTagSVD.begin(), tempHistTagSVD.end());
+      combinedBestSVD.insert(combinedBestSVD.end(), tempHistBestSVD.begin(), tempHistBestSVD.end());
+    }
+  
     std::vector<std::string> tempAlgos = cutPropCurrent.GetJtAlgos();
     std::vector<double> tempMinJtPt = cutPropCurrent.GetMinJtPtCut();
     std::vector<double> tempMultiJtPt = cutPropCurrent.GetMultiJtPtCut();
     std::vector<int> tempRecoTruncPos = cutPropCurrent.GetRecoTruncPos();
+    centBinsLow = cutPropCurrent.GetCentBinsLow();
+    centBinsHi = cutPropCurrent.GetCentBinsHi();
 
     for(unsigned int algoI = 0; algoI < tempAlgos.size(); ++algoI){
       bool isAlgoFound = false;
+
+      globalAlgos.push_back(tempAlgos[algoI]);
+      Int_t rVal = getRVal(tempAlgos[algoI]);
+
+      for(unsigned int cI = 0; cI < centBinsLow.size(); ++cI){
+	std::string centBinsStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);
+      
+	if(nGenPtBins[globalAlgos.size()-1][cI] < 0){
+	  nGenPtBins[globalAlgos.size()-1][cI] = cutPropCurrent.GetGenNBinsFromRValCent(rVal, centBinsStr);
+	  cutPropCurrent.GetGenBinsFromRValCent(rVal, centBinsStr, genPtBins[globalAlgos.size()-1][cI]);
+	}
+	if(nRecoPtBins[globalAlgos.size()-1][cI] < 0){
+	  nRecoPtBins[globalAlgos.size()-1][cI] = cutPropCurrent.GetRecoNBinsFromRValCent(rVal, centBinsStr);
+	  cutPropCurrent.GetRecoBinsFromRValCent(rVal, centBinsStr, recoPtBins[globalAlgos.size()-1][cI]);
+	}
+      }
 
       for(unsigned int jtI = 0; jtI < jtAlgosStr.size(); ++jtI){
 	if(isStrSame(jtAlgosStr[jtI], tempAlgos[algoI])){
@@ -219,9 +268,19 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
 	minJtPt.push_back(tempMinJtPt[algoI]);
 	multiJtPt.push_back(tempMultiJtPt[algoI]);
 	recoTruncPos.push_back(tempRecoTruncPos[algoI]);
-      }
+      }      
     }
 
+    for(unsigned int algoI = 0; algoI < globalAlgos.size(); ++algoI){
+      Int_t rVal = getRVal(globalAlgos[algoI]);
+
+      for(unsigned int cI = 0; cI < centBinsLow.size(); ++cI){
+	std::string centBinsStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);
+	cutPropCurrent.SetGenPtBins(rVal, centBinsStr, prevProp.GetGenPtBins(rVal, centBinsStr));
+	cutPropCurrent.SetRecoPtBins(rVal, centBinsStr, prevProp.GetRecoPtBins(rVal, centBinsStr));
+      }
+    }
+    
     std::vector<std::string> classList;
     std::vector<std::string> contentsList = returnRootFileContentsList(inFile_p, "", "", -1, &(classList));
 
@@ -242,7 +301,7 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
 
       tdirNamePerFile.at(tdirNamePerFile.size()-1).push_back(contentsList.at(i));
     }
-
+  
     if(fI != 0){
       bool testProp = cutPropCurrent.CheckPropagatorsMatch(prevProp, true, true);
       if(!testProp){
@@ -318,7 +377,8 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
   
   int cutDirPos = -1;
   int subDirPos = -1;
-  int unfoldDirPos = -1;
+  int unfoldDirBayesPos = -1;
+  int unfoldDirSVDPos = -1;
   
   for(Int_t dI = 0; dI < nDir; ++dI){
     outFile_p->cd();
@@ -344,12 +404,17 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
 
     if(isStrSame("cutDir", tdirNameVect.at(dI))) cutDirPos = dI;
     else if(tdirNameVect.at(dI).find("subDir") != std::string::npos) subDirPos = dI;
-    else if(tdirNameVect.at(dI).find("unfoldDir") != std::string::npos) unfoldDirPos = dI;
+    else if(tdirNameVect.at(dI).find("unfoldDirBayes") != std::string::npos) unfoldDirBayesPos = dI;
+    else if(tdirNameVect.at(dI).find("unfoldDirSVD") != std::string::npos) unfoldDirSVDPos = dI;
   }
 
-  if(unfoldDirPos >= 0){
-    std::cout << "UnfoldDirPos: " << unfoldDirPos << std::endl;
-    std::cout << " " << dirs_p[unfoldDirPos]->GetName() << std::endl;
+  if(unfoldDirBayesPos >= 0){
+    std::cout << "UnfoldDirBayesPos: " << unfoldDirBayesPos << std::endl;
+    std::cout << " " << dirs_p[unfoldDirBayesPos]->GetName() << std::endl;
+  }
+  else if(unfoldDirSVDPos >= 0){
+    std::cout << "UnfoldDirSVDPos: " << unfoldDirSVDPos << std::endl;
+    std::cout << " " << dirs_p[unfoldDirSVDPos]->GetName() << std::endl;
   }
   else{
     std::cout << "No unfolding dir found warning" << std::endl;
@@ -450,18 +515,33 @@ int combineFiles(const std::string outFileName, std::vector<std::string> fileLis
   prevProp.SetMultiJtPtCut(multiJtPt);
   prevProp.SetRecoTruncPos(recoTruncPos);
 
-  prevProp.SetNHistDim(combinedHistTag.size());
-  prevProp.SetHistTag(combinedHistTag);
+  prevProp.SetNHistDim(combinedHistTagBayes.size());
+  prevProp.SetHistTagBayes(combinedHistTagBayes);
   prevProp.SetHistBestBayes(combinedBestBayes);
 
-  std::cout << " Best bayes: " << combinedHistTag.size() << ", " << combinedBestBayes.size() << std::endl;
-  std::cout << "  unfoldDirPos: " << unfoldDirPos << std::endl;
+  prevProp.SetHistTagSVD(combinedHistTagSVD);
+  prevProp.SetHistBestSVD(combinedBestSVD);
+
+
+  for(unsigned int algoI = 0; algoI < globalAlgos.size(); ++algoI){
+    Int_t rVal = getRVal(globalAlgos[algoI]);
+
+    for(unsigned int cI = 0; cI < centBinsLow.size(); ++cI){
+      std::string centBinsStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);
+      
+      prevProp.SetGenPtBins(rVal, centBinsStr, nGenPtBins[algoI][cI], genPtBins[algoI][cI]);
+      prevProp.SetRecoPtBins(rVal, centBinsStr, nRecoPtBins[algoI][cI], recoPtBins[algoI][cI]);
+    }
+  }
+
+  std::cout << " Best bayes: " << combinedHistTagBayes.size() << ", " << combinedBestBayes.size() << std::endl;
+  std::cout << "  unfoldDirBayesPos: " << unfoldDirBayesPos << std::endl;
   
-  if(unfoldDirPos < 0){
+  if(unfoldDirBayesPos < 0 || unfoldDirSVDPos < 0){
     if(!prevProp.WriteAllVarToFile(outFile_p, dirs_p[cutDirPos], dirs_p[subDirPos], NULL)) std::cout << "Warning: Cut writing has failed" << std::endl;
   }
   else{
-    if(!prevProp.WriteAllVarToFile(outFile_p, dirs_p[cutDirPos], dirs_p[subDirPos], dirs_p[unfoldDirPos])) std::cout << "Warning: Cut writing has failed" << std::endl;
+    if(!prevProp.WriteAllVarToFile(outFile_p, dirs_p[cutDirPos], dirs_p[subDirPos], dirs_p[unfoldDirBayesPos], dirs_p[unfoldDirSVDPos])) std::cout << "Warning: Cut writing has failed" << std::endl;
   }
 
   outFile_p->Close();
