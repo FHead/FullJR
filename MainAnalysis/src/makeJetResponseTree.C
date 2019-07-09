@@ -64,6 +64,7 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
   std::vector<std::string> fileList;
   std::vector<double> pthats;
   std::vector<double> pthatWeights;
+  std::string workDir = ".";
 
   if(inName.find(".root") != std::string::npos){
     fileList.push_back(inName);
@@ -99,6 +100,11 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
 	  tempStr.replace(0,tempStr.find("=")+1, "");
 	  isPP = std::stoi(tempStr);
 	}
+   else if(tempStr.substr(0, std::string("WORKDIR=").size()).find("WORKDIR=") != std::string::npos)
+   {
+	  tempStr.replace(0,tempStr.find("=")+1, "");
+	  workDir = tempStr;
+   }
 	else std::cout << "WARNING: Line in \'" << inName << "\', \'" << tempStr << "\' is invalid. check input" << std::endl;
       }     
     }
@@ -192,7 +198,7 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
 
   Int_t posR4Temp = -1;
   Int_t posGeneralTemp = -1;
-  const Int_t nMaxTrees = 6;
+  const Int_t nMaxTrees = 10;
   const Int_t nTrees = responseTrees.size(); 
 
   Int_t rValI[nMaxTrees];
@@ -276,7 +282,7 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
   delete date;
   const std::string fullPath = std::getenv("FULLJRDIR");
 
-  std::string inDir = fileList[0];
+  std::string inDir = workDir;
   inDir = inDir.substr(0, inDir.rfind("/"));
 
   std::string outFileName = inName;
@@ -298,6 +304,9 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
     checkMakeDir("output");
     checkMakeDir("output/" + dateStr);
   }
+  
+  std::cout << inDir << std::endl;
+  std::cout << "OUTFILENAME = " << outFileName << std::endl;
 
   const Double_t jtAbsEtaMax = 2.;
 
