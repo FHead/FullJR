@@ -305,9 +305,6 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
     checkMakeDir("output/" + dateStr);
   }
   
-  std::cout << inDir << std::endl;
-  std::cout << "OUTFILENAME = " << outFileName << std::endl;
-
   const Double_t jtAbsEtaMax = 2.;
 
   const Int_t nJtAbsEtaBins = 5;
@@ -352,7 +349,7 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
     for(Int_t cI = 0; cI < nCentBins; ++cI){
       std::string centStr = "Cent" + std::to_string(centBinsLow[cI]) + "to" + std::to_string(centBinsHi[cI]);
 
-      std::cout << "jI, cent: " << jI << ", " << centStr << std::endl;
+      std::cout << "jI, tree: " << jI << ", " << centStr << std::endl;
 
       for(Int_t bI = 0; bI < nGenJtPtBins[jI][cI]+1; ++bI){
 	std::cout << " " << genJtPtBins[jI][cI][bI] << ",";
@@ -721,6 +718,7 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
 
 	      genJtPt_General_ParaFills_h[dI][cI][iI][mI][aI][sI] = new TH1D(("genJtPt_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "General_ParaFills_h").c_str(), ";Gen. Jet p_{T};Counts (Weighted)", nGeneralBins, generalBins);
 
+         // std::cout << "response_General_h " << " " << nGeneralBins << std::endl;
 	      response_General_h[dI][cI][iI][mI][aI][sI] = new TH2D(("response_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "General_h").c_str(), ";Reco. Jet p_{T};Gen. Jet p_{T}", nGeneralBins, generalBins, nGeneralBins, generalBins);
 
 	      response_General_Half1_h[dI][cI][iI][mI][aI][sI] = new TH2D(("response_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "General_Half1_h").c_str(), ";Reco. Jet p_{T};Gen. Jet p_{T}", nGeneralBins, generalBins, nGeneralBins, generalBins);
@@ -738,7 +736,8 @@ int makeJetResponseTree(const std::string inName, bool isPP = false, double inEn
 	      
 	      genJtPt_GoodReco_ParaFills_h[dI][cI][iI][mI][aI][sI] = new TH1D(("genJtPt_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "GoodReco_ParaFills_h").c_str(), ";Gen. Jet p_{T};Counts (Weighted)", nGenJtPtBins[dI][cI], genJtPtBins[dI][cI]);
 
-	      response_RecoGenSymm_h[dI][cI][iI][mI][aI][sI] = new TH2D(("response_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "RecoGenSymm_h").c_str(), ";Reco. Jet p_{T};Gen. Jet p_{T}", nGenJtPtBins[dI][cI], genJtPtBins[dI][cI], nGenJtPtBins[dI][cI], genJtPtBins[dI][cI]);
+         // std::cout << "response_RecoGenSymm_h " << " " << nRecoJtPtBins[dI][cI] << " " << nGenJtPtBins[dI][cI] << std::endl;
+	      response_RecoGenSymm_h[dI][cI][iI][mI][aI][sI] = new TH2D(("response_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "RecoGenSymm_h").c_str(), ";Reco. Jet p_{T};Gen. Jet p_{T}", nRecoJtPtBins[dI][cI], recoJtPtBins[dI][cI], nGenJtPtBins[dI][cI], genJtPtBins[dI][cI]);
 	      
 	      response_RecoGenAsymm_h[dI][cI][iI][mI][aI][sI] = new TH2D(("response_" + dirName + "_" + centStr + "_" + idStr[iI] + "_" + resStr + "_" + jtAbsEtaStr + tempSysStr + "RecoGenAsymm_h").c_str(), ";Reco. Jet p_{T};Gen. Jet p_{T}", nRecoJtPtBins[dI][cI], recoJtPtBins[dI][cI], nGenJtPtBins[dI][cI], genJtPtBins[dI][cI]);
 

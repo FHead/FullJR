@@ -9,8 +9,17 @@ class smallOrLargeR
  public:
   const double deltaBin = 0.1;
   //Chosen loose since bins will be effective integer but double because of TH1 initialization
-  static const int nR = 6;
-  std::vector<int> rVals = {2, 3, 4, 6, 8, 10};
+  static const int nR = 8;
+  std::vector<int> rVals = {1, 2, 3, 4, 5, 6, 8, 10};
+   
+  std::vector<double> genPtBinsR1Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR1Cent0to10 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR1Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR1Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR1Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR1Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR1Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR1Cent50to90 = {200, 300, 400, 500};
    
   std::vector<double> genPtBinsR2Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
   std::vector<double> recoPtBinsR2Cent0to10 = {200, 300, 400, 500, 630, 1000};
@@ -38,6 +47,15 @@ class smallOrLargeR
   std::vector<double> recoPtBinsR4Cent30to50 = {200, 300, 400, 500, 630};
   std::vector<double> genPtBinsR4Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
   std::vector<double> recoPtBinsR4Cent50to90 = {200, 300, 400, 500};
+
+  std::vector<double> genPtBinsR5Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR5Cent0to10 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR5Cent10to30 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
+  std::vector<double> recoPtBinsR5Cent10to30 = {200, 300, 400, 500, 630, 1000};
+  std::vector<double> genPtBinsR5Cent30to50 = {20, 100, 150, 200, 300, 400, 500, 630, 1000};
+  std::vector<double> recoPtBinsR5Cent30to50 = {200, 300, 400, 500, 630};
+  std::vector<double> genPtBinsR5Cent50to90 = {20, 100, 150, 200, 300, 400, 500, 630};
+  std::vector<double> recoPtBinsR5Cent50to90 = {200, 300, 400, 500};
 
   std::vector<double> genPtBinsR6Cent0to10 = {20, 100, 150, 200, 300, 400, 500, 630, 1000, 1500};
   std::vector<double> recoPtBinsR6Cent0to10 = {200, 300, 400, 500, 630, 1000};
@@ -79,6 +97,15 @@ class smallOrLargeR
   int GetNR(){return nR;}
   std::vector<int> GetRVals(){return rVals;}
 
+  std::vector<double> GetGenPtBinsR1Cent0to10(){return genPtBinsR1Cent0to10;}
+  std::vector<double> GetRecoPtBinsR1Cent0to10(){return recoPtBinsR1Cent0to10;}
+  std::vector<double> GetGenPtBinsR1Cent10to30(){return genPtBinsR1Cent10to30;}
+  std::vector<double> GetRecoPtBinsR1Cent10to30(){return recoPtBinsR1Cent10to30;}
+  std::vector<double> GetGenPtBinsR1Cent30to50(){return genPtBinsR1Cent30to50;}
+  std::vector<double> GetRecoPtBinsR1Cent30to50(){return recoPtBinsR1Cent30to50;}
+  std::vector<double> GetGenPtBinsR1Cent50to90(){return genPtBinsR1Cent50to90;}
+  std::vector<double> GetRecoPtBinsR1Cent50to90(){return recoPtBinsR1Cent50to90;}
+
   std::vector<double> GetGenPtBinsR2Cent0to10(){return genPtBinsR2Cent0to10;}
   std::vector<double> GetRecoPtBinsR2Cent0to10(){return recoPtBinsR2Cent0to10;}
   std::vector<double> GetGenPtBinsR2Cent10to30(){return genPtBinsR2Cent10to30;}
@@ -105,6 +132,15 @@ class smallOrLargeR
   std::vector<double> GetRecoPtBinsR4Cent30to50(){return recoPtBinsR4Cent30to50;}
   std::vector<double> GetGenPtBinsR4Cent50to90(){return genPtBinsR4Cent50to90;}
   std::vector<double> GetRecoPtBinsR4Cent50to90(){return recoPtBinsR4Cent50to90;}
+
+  std::vector<double> GetGenPtBinsR5Cent0to10(){return genPtBinsR5Cent0to10;}
+  std::vector<double> GetRecoPtBinsR5Cent0to10(){return recoPtBinsR5Cent0to10;}
+  std::vector<double> GetGenPtBinsR5Cent10to30(){return genPtBinsR5Cent10to30;}
+  std::vector<double> GetRecoPtBinsR5Cent10to30(){return recoPtBinsR5Cent10to30;}
+  std::vector<double> GetGenPtBinsR5Cent30to50(){return genPtBinsR5Cent30to50;}
+  std::vector<double> GetRecoPtBinsR5Cent30to50(){return recoPtBinsR5Cent30to50;}
+  std::vector<double> GetGenPtBinsR5Cent50to90(){return genPtBinsR5Cent50to90;}
+  std::vector<double> GetRecoPtBinsR5Cent50to90(){return recoPtBinsR5Cent50to90;}
 
   std::vector<double> GetGenPtBinsR6Cent0to10(){return genPtBinsR6Cent0to10;}
   std::vector<double> GetRecoPtBinsR6Cent0to10(){return recoPtBinsR6Cent0to10;}
@@ -195,7 +231,13 @@ void smallOrLargeR::GetRecoBinsFromRValCent(int rVal, std::string centStr, doubl
  
 std::vector<double> smallOrLargeR::GetGenPtBins(int rVal, std::string centStr)
 {
-  if(rVal == 2){
+  if(rVal == 1){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR1Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR1Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR1Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR1Cent50to90;
+  }
+  else if(rVal == 2){
     if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR2Cent0to10;
     else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR2Cent10to30;
     else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR2Cent30to50;
@@ -212,6 +254,12 @@ std::vector<double> smallOrLargeR::GetGenPtBins(int rVal, std::string centStr)
     else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR4Cent10to30;
     else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR4Cent30to50;
     else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR4Cent50to90;
+  }
+  else if(rVal == 5){
+    if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR5Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return genPtBinsR5Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return genPtBinsR5Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return genPtBinsR5Cent50to90;
   }
   else if(rVal == 6){
     if(centStr.find("Cent0to10") != std::string::npos) return genPtBinsR6Cent0to10;
@@ -237,7 +285,13 @@ std::vector<double> smallOrLargeR::GetGenPtBins(int rVal, std::string centStr)
 
 std::vector<double> smallOrLargeR::GetRecoPtBins(int rVal, std::string centStr)
 {
-  if(rVal == 2){
+  if(rVal == 1){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR1Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR1Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR1Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR1Cent50to90;
+  }
+  else if(rVal == 2){
     if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR2Cent0to10;
     else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR2Cent10to30;
     else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR2Cent30to50;
@@ -254,6 +308,12 @@ std::vector<double> smallOrLargeR::GetRecoPtBins(int rVal, std::string centStr)
     else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR4Cent10to30;
     else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR4Cent30to50;
     else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR4Cent50to90;
+  }
+  else if(rVal == 5){
+    if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR5Cent0to10;
+    else if(centStr.find("Cent10to30") != std::string::npos) return recoPtBinsR5Cent10to30;
+    else if(centStr.find("Cent30to50") != std::string::npos) return recoPtBinsR5Cent30to50;
+    else if(centStr.find("Cent50to90") != std::string::npos) return recoPtBinsR5Cent50to90;
   }
   else if(rVal == 6){
     if(centStr.find("Cent0to10") != std::string::npos) return recoPtBinsR6Cent0to10;
