@@ -105,7 +105,7 @@ At this point it is highly convenient to combine files into single for PbPb and 
 
 Step 8 (start plotting):
 To do spectra plotting do:
-./bin/plotUnfoldedSpectra.exe <ppFile> <pbpbFile>
+./bin/plotUnfoldedAll.exe <ppFile> <pbpbFile> <HEP data for ATLAS comp> <tagStr Use CombinedAlgos> <tables/overrideBinsPlot.txt - see tables dir, allows for arbitrary rebins> 
 
 Using bash scripts:
 bash bash/runResponse.sh # Step 4, long
