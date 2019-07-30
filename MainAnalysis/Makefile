@@ -21,9 +21,9 @@ setStudyMultEnv.sh' in top level StudyMult directory to fix.\n\n"
 
 ROOUNF=-I $(ROOUNFPATH) -L $(ROOUNFPATH) -lRooUnfold
 
-#all: mkdirBin mkdirPdf mkdirOutput checkFullJRDir bin/makeRawRAATree.exe bin/makeJetResponseTree.exe bin/makeDeriveFlatResponse.exe bin/validateJetResponse.exe bin/plotJetResponse.exe bin/makeMuonFakeCheck.exe bin/checkGoodJetBadJetPF.exe bin/processRawData.exe bin/unfoldRawData.exe bin/unfoldRawDataTest.exe bin/deriveDijetWeights.exe bin/checkGenHydSpectra.exe bin/plotUnfoldedSpectra.exe bin/plotUnfoldedAll.exe bin/checkUnfoldTermination.exe bin/combineFiles.exe bin/testRooUnfResUnderflow.exe bin/checkFileNClassContents.exe bin/compareAllHist.exe bin/lumiComp.exe bin/extractNMB.exe bin/checkOverlap.exe bin/comboTest.exe bin/combineResponse.exe bin/splitFiles.exe bin/unfoldTest.exe bin/validateSplit.exe bin/extractBins.exe bin/extractNSigma.exe bin/extractSigmaFit.exe bin/quickHistSum.exe #bin/plotUnfoldedRAA.exe
+#all: mkdirBin mkdirPdf mkdirOutput checkFullJRDir bin/makeRawRAATree.exe bin/makeJetResponseTree.exe bin/makeJetResponseTreeUpdated.exe bin/makeDeriveFlatResponse.exe bin/validateJetResponse.exe bin/plotJetResponse.exe bin/makeMuonFakeCheck.exe bin/checkGoodJetBadJetPF.exe bin/processRawData.exe bin/unfoldRawData.exe bin/unfoldRawDataTest.exe bin/deriveDijetWeights.exe bin/checkGenHydSpectra.exe bin/plotUnfoldedSpectra.exe bin/plotUnfoldedAll.exe bin/checkUnfoldTermination.exe bin/combineFiles.exe bin/testRooUnfResUnderflow.exe bin/checkFileNClassContents.exe bin/compareAllHist.exe bin/lumiComp.exe bin/extractNMB.exe bin/checkOverlap.exe bin/comboTest.exe bin/combineResponse.exe bin/splitFiles.exe bin/unfoldTest.exe bin/validateSplit.exe bin/extractBins.exe bin/extractNSigma.exe bin/extractSigmaFit.exe bin/quickHistSum.exe #bin/plotUnfoldedRAA.exe
 
-all: mkdirBin mkdirPdf mkdirOutput checkFullJRDir  bin/splitFiles.exe bin/makeRawRAATree.exe bin/makeJetResponseTree.exe bin/makeDeriveFlatResponse.exe bin/validateJetResponse.exe bin/processRawData.exe bin/unfoldRawData.exe bin/unfoldRawDataTest.exe bin/deriveDijetWeights.exe bin/checkGenHydSpectra.exe bin/plotUnfoldedAll.exe bin/checkUnfoldTermination.exe bin/combineFiles.exe bin/testRooUnfResUnderflow.exe bin/checkFileNClassContents.exe bin/compareAllHist.exe bin/lumiComp.exe bin/extractNMB.exe bin/checkOverlap.exe bin/comboTest.exe bin/combineResponse.exe bin/unfoldTest.exe bin/validateSplit.exe bin/extractBins.exe bin/extractNSigma.exe bin/extractSigmaFit.exe bin/quickHistSum.exe bin/toyATLASCMS.exe bin/toyATLASCMSAlt.exe bin/jetCorr.exe bin/testSVD.exe bin/counts.exe bin/jetJSON.exe #bin/plotUnfoldedRAA.exe
+all: mkdirBin mkdirPdf mkdirOutput checkFullJRDir  bin/splitFiles.exe bin/makeRawRAATree.exe bin/makeJetResponseTree.exe bin/makeJetResponseTreeUpdated.exe  bin/makeJetResponseTreeUpdated2.exe bin/makeJetResponseTreeUpdated3.exe bin/makeDeriveFlatResponse.exe bin/validateJetResponse.exe bin/processRawData.exe bin/unfoldRawData.exe bin/unfoldRawDataTest.exe bin/deriveDijetWeights.exe bin/checkGenHydSpectra.exe bin/plotUnfoldedAll.exe bin/checkUnfoldTermination.exe bin/combineFiles.exe bin/testRooUnfResUnderflow.exe bin/checkFileNClassContents.exe bin/compareAllHist.exe bin/lumiComp.exe bin/extractNMB.exe bin/checkOverlap.exe bin/comboTest.exe bin/combineResponse.exe bin/unfoldTest.exe bin/validateSplit.exe bin/extractBins.exe bin/extractNSigma.exe bin/extractSigmaFit.exe bin/quickHistSum.exe bin/toyATLASCMS.exe bin/toyATLASCMSAlt.exe bin/jetCorr.exe bin/testSVD.exe bin/counts.exe bin/jetJSON.exe #bin/plotUnfoldedRAA.exe
 
 mkdirBin:
 	$(MKDIR_BIN)
@@ -42,6 +42,15 @@ bin/makeRawRAATree.exe: src/makeRawRAATree.C
 
 bin/makeJetResponseTree.exe: src/makeJetResponseTree.C
 	$(CXX) $(CXXFLAGS) src/makeJetResponseTree.C $(ROOT) $(ROOUNF) $(INCLUDE) -o bin/makeJetResponseTree.exe
+
+bin/makeJetResponseTreeUpdated.exe: src/makeJetResponseTreeUpdated.C
+	$(CXX) $(CXXFLAGS) src/makeJetResponseTreeUpdated.C $(ROOT) $(ROOUNF) $(INCLUDE) -o bin/makeJetResponseTreeUpdated.exe
+
+bin/makeJetResponseTreeUpdated2.exe: src/makeJetResponseTreeUpdated2.C
+	$(CXX) $(CXXFLAGS) src/makeJetResponseTreeUpdated2.C $(ROOT) $(ROOUNF) $(INCLUDE) -o bin/makeJetResponseTreeUpdated2.exe
+
+bin/makeJetResponseTreeUpdated3.exe: src/makeJetResponseTreeUpdated3.C
+	$(CXX) $(CXXFLAGS) src/makeJetResponseTreeUpdated3.C $(ROOT) $(ROOUNF) $(INCLUDE) -o bin/makeJetResponseTreeUpdated3.exe
 
 bin/makeDeriveFlatResponse.exe: src/makeDeriveFlatResponse.C
 	$(CXX) $(CXXFLAGS) src/makeDeriveFlatResponse.C $(ROOT) $(INCLUDE) -o bin/makeDeriveFlatResponse.exe

@@ -19,6 +19,7 @@
 #include "Utility/include/checkMakeDir.h"
 #include "Utility/include/doGlobalDebug.h"
 #include "Utility/include/plotUtilities.h"
+#include "Utility/include/enums.h"
 
 class scaleErrorTool{
  public:
@@ -34,6 +35,7 @@ class scaleErrorTool{
   std::string getValidStringFromPos(unsigned int pos, std::vector<std::string> inCompVect);
   unsigned int getKey(std::string fullLine);
   unsigned int getKey(std::string centStr, std::string absEtaStr, std::string rStr, std::string flowStr);
+  unsigned int getKey(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType);
 
   std::string getStringFromKey(unsigned int key);
 
@@ -47,10 +49,25 @@ class scaleErrorTool{
   double getSigDataMinusMC(int centVal, double absEtaVal, int rVal, std::string flowStr);
   double getSigDataMinusMCErr(int centVal, double absEtaVal, int rVal, std::string flowStr);
 
+  double getMuDataMinusMC(int centVal, double absEtaVal, int rVal, FlowType flowType);
+  double getMuDataMinusMCErr(int centVal, double absEtaVal, int rVal, FlowType flowType);
+  double getSigDataMinusMC(int centVal, double absEtaVal, int rVal, FlowType flowType);
+  double getSigDataMinusMCErr(int centVal, double absEtaVal, int rVal, FlowType flowType);
+
+  double getMuDataMinusMC(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType);
+  double getMuDataMinusMCErr(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType);
+  double getSigDataMinusMC(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType);
+  double getSigDataMinusMCErr(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType);
+
   double getMuDataMinusMC(std::string fullLine);
   double getMuDataMinusMCErr(std::string fullLine);
   double getSigDataMinusMC(std::string fullLine);
   double getSigDataMinusMCErr(std::string fullLine);
+
+  CentType   getCentType(std::string centStr)     { return static_cast<CentType>(getValidPos(centStr, centStrV)); }
+  AbsEtaType getAbsEtaType(std::string absEtaStr) { return static_cast<AbsEtaType>(getValidPos(absEtaStr, absEtaStrV)); }
+  RType      getRType(std::string rStr)           { return static_cast<RType>(getValidPos(rStr, rStrV)); }
+  FlowType   getFlowType(std::string flowStr)     { return static_cast<FlowType>(getValidPos(flowStr, flowStrV)); }
 
   void makeErrorMaps();
 
@@ -194,11 +211,16 @@ unsigned int scaleErrorTool::getKey(std::string fullLine)
 
 unsigned int scaleErrorTool::getKey(std::string centStr, std::string absEtaStr, std::string rStr, std::string flowStr)
 {
+  return getKey(getCentType(centStr), getAbsEtaType(absEtaStr), getRType(rStr), getFlowType(flowStr));
+}
+  
+unsigned int scaleErrorTool::getKey(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType)
+{
   unsigned int retKey = 0;
-  retKey += getValidPos(centStr, centStrV);
-  retKey += 10*getValidPos(absEtaStr, absEtaStrV);
-  retKey += 100*getValidPos(rStr, rStrV);
-  retKey += 1000*getValidPos(flowStr, flowStrV);
+  retKey += centType;
+  retKey += 10 * absEtaType;
+  retKey += 100 * rType;
+  retKey += 1000 * flowType;
 
   return retKey;
 }
@@ -244,126 +266,179 @@ double scaleErrorTool::getSigDataMinusMCErr(std::string centStr, std::string abs
 
 double scaleErrorTool::getMuDataMinusMC(int centVal, double absEtaVal, int rVal, std::string flowStr)
 {
-  std::string centStr = "";
-  std::string absEtaStr = "";
-  std::string rStr = "";
-
-  absEtaVal = TMath::Abs(absEtaVal);
-
-  for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
-    if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
-      centStr = centStrV.at(cI);
-      break;
-    }
-  }
-
-  for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
-    if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
-      absEtaStr = absEtaStrV.at(cI);
-      break;
-    }
-  }
-
-  for(unsigned int cI = 0; cI < rValV.size(); ++cI){
-    if(rValV.at(cI) == rVal){
-      rStr = rStrV.at(cI);
-      break;
-    }
-  }
-
-  return getMuDataMinusMC(centStr, absEtaStr, rStr, flowStr);
+   FlowType flowType = getFlowType(flowStr);
+   return getMuDataMinusMC(centVal, absEtaVal, rVal, flowType);
 }
 
 double scaleErrorTool::getMuDataMinusMCErr(int centVal, double absEtaVal, int rVal, std::string flowStr)
 {
-  std::string centStr = "";
-  std::string absEtaStr = "";
-  std::string rStr = "";
-
-  for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
-    if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
-      centStr = centStrV.at(cI);
-      break;
-    }
-  }
-
-  for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
-    if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
-      absEtaStr = absEtaStrV.at(cI);
-      break;
-    }
-  }
-
-  for(unsigned int cI = 0; cI < rValV.size(); ++cI){
-    if(rValV.at(cI) == rVal){
-      rStr = rStrV.at(cI);
-      break;
-    }
-  }
-
-  return getMuDataMinusMCErr(centStr, absEtaStr, rStr, flowStr);
+   FlowType flowType = getFlowType(flowStr);
+   return getMuDataMinusMCErr(centVal, absEtaVal, rVal, flowType);
 }
 
 double scaleErrorTool::getSigDataMinusMC(int centVal, double absEtaVal, int rVal, std::string flowStr)
 {
-  std::string centStr = "";
-  std::string absEtaStr = "";
-  std::string rStr = "";
-
-  for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
-    if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
-      centStr = centStrV.at(cI);
-      break;
-    }
-  }
-
-  for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
-    if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
-      absEtaStr = absEtaStrV.at(cI);
-      break;
-    }
-  }
-
-  for(unsigned int cI = 0; cI < rValV.size(); ++cI){
-    if(rValV.at(cI) == rVal){
-      rStr = rStrV.at(cI);
-      break;
-    }
-  }
-
-  return getSigDataMinusMC(centStr, absEtaStr, rStr, flowStr);
+   FlowType flowType = getFlowType(flowStr);
+   return getSigDataMinusMC(centVal, absEtaVal, rVal, flowType);
 }
 
 double scaleErrorTool::getSigDataMinusMCErr(int centVal, double absEtaVal, int rVal, std::string flowStr)
 {
-  std::string centStr = "";
-  std::string absEtaStr = "";
-  std::string rStr = "";
+   FlowType flowType = getFlowType(flowStr);
+   return getSigDataMinusMCErr(centVal, absEtaVal, rVal, flowType);
+}
+  
+double scaleErrorTool::getMuDataMinusMC(int centVal, double absEtaVal, int rVal, FlowType flowType)
+{
+   CentType centType;
+   AbsEtaType absEtaType;
+   RType rType;
 
-  for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
-    if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
-      centStr = centStrV.at(cI);
-      break;
-    }
-  }
+   absEtaVal = TMath::Abs(absEtaVal);
 
-  for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
-    if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
-      absEtaStr = absEtaStrV.at(cI);
-      break;
-    }
-  }
+   for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
+      if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
+         centType = static_cast<CentType>(cI);
+         break;
+      }
+   }
 
-  for(unsigned int cI = 0; cI < rValV.size(); ++cI){
-    if(rValV.at(cI) == rVal){
-      rStr = rStrV.at(cI);
-      break;
-    }
-  }
+   for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
+      if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
+         absEtaType = static_cast<AbsEtaType>(cI);
+         break;
+      }
+   }
 
-  return getSigDataMinusMCErr(centStr, absEtaStr, rStr, flowStr);
+   for(unsigned int cI = 0; cI < rValV.size(); ++cI){
+      if(rValV.at(cI) == rVal){
+         rType = static_cast<RType>(cI);
+         break;
+      }
+   }
+
+   return getMuDataMinusMC(centType, absEtaType, rType, flowType);
 }
 
+double scaleErrorTool::getMuDataMinusMCErr(int centVal, double absEtaVal, int rVal, FlowType flowType)
+{
+   CentType centType;
+   AbsEtaType absEtaType;
+   RType rType;
+
+   absEtaVal = TMath::Abs(absEtaVal);
+
+   for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
+      if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
+         centType = static_cast<CentType>(cI);
+         break;
+      }
+   }
+
+   for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
+      if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
+         absEtaType = static_cast<AbsEtaType>(cI);
+         break;
+      }
+   }
+
+   for(unsigned int cI = 0; cI < rValV.size(); ++cI){
+      if(rValV.at(cI) == rVal){
+         rType = static_cast<RType>(cI);
+         break;
+      }
+   }
+
+   return getMuDataMinusMCErr(centType, absEtaType, rType, flowType);
+}
+
+double scaleErrorTool::getSigDataMinusMC(int centVal, double absEtaVal, int rVal, FlowType flowType)
+{
+   CentType centType;
+   AbsEtaType absEtaType;
+   RType rType;
+
+   absEtaVal = TMath::Abs(absEtaVal);
+
+   for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
+      if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
+         centType = static_cast<CentType>(cI);
+         break;
+      }
+   }
+
+   for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
+      if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
+         absEtaType = static_cast<AbsEtaType>(cI);
+         break;
+      }
+   }
+
+   for(unsigned int cI = 0; cI < rValV.size(); ++cI){
+      if(rValV.at(cI) == rVal){
+         rType = static_cast<RType>(cI);
+         break;
+      }
+   }
+
+   return getSigDataMinusMC(centType, absEtaType, rType, flowType);
+}
+
+double scaleErrorTool::getSigDataMinusMCErr(int centVal, double absEtaVal, int rVal, FlowType flowType)
+{
+   CentType centType;
+   AbsEtaType absEtaType;
+   RType rType;
+
+   absEtaVal = TMath::Abs(absEtaVal);
+
+   for(unsigned int cI = 0; cI < centValLowV.size(); ++cI){
+      if(centValLowV.at(cI) <= centVal && centVal < centValHiV.at(cI)){
+         centType = static_cast<CentType>(cI);
+         break;
+      }
+   }
+
+   for(unsigned int cI = 0; cI < absEtaValLowV.size(); ++cI){
+      if(absEtaValLowV.at(cI) <= absEtaVal && absEtaVal < absEtaValHiV.at(cI)){
+         absEtaType = static_cast<AbsEtaType>(cI);
+         break;
+      }
+   }
+
+   for(unsigned int cI = 0; cI < rValV.size(); ++cI){
+      if(rValV.at(cI) == rVal){
+         rType = static_cast<RType>(cI);
+         break;
+      }
+   }
+
+   return getSigDataMinusMCErr(centType, absEtaType, rType, flowType);
+}
+
+double scaleErrorTool::getMuDataMinusMC(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType)
+{
+  unsigned int key = getKey(centType, absEtaType, rType, flowType);
+  return muDataMinusMC[key];
+}
+
+double scaleErrorTool::getMuDataMinusMCErr(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType)
+{
+  unsigned int key = getKey(centType, absEtaType, rType, flowType);
+  return muDataMinusMCErr[key];
+}
+
+double scaleErrorTool::getSigDataMinusMC(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType)
+{
+  unsigned int key = getKey(centType, absEtaType, rType, flowType);
+  return sigDataMinusMC[key];
+}
+
+double scaleErrorTool::getSigDataMinusMCErr(CentType centType, AbsEtaType absEtaType, RType rType, FlowType flowType)
+{
+  unsigned int key = getKey(centType, absEtaType, rType, flowType);
+  return sigDataMinusMCErr[key];
+}
 
 double scaleErrorTool::getMuDataMinusMC(std::string fullLine)
 {
